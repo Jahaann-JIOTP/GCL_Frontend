@@ -7,6 +7,10 @@ const meterMapping = {
     "Solar 2": "U_27",
     "Tranformer 1": "U_24",
     "Tranformer 2": "U_25",
+    "Main Genset": "G1_U16",
+    "Genset 1": "G1_U17",
+    "Genset 2": "G1_U18",
+    "Genset 3": "G1_U19",
     "Air Compressors-1": "U_17",
     "Auto Packing": "U_5",
     "Ball Mills-1": "U_23",
@@ -64,104 +68,110 @@ const meterMapping = {
 };
 
 function Status_table() {
-    const [meterData, setMeterData] = useState([]);
-  
-    const fetchData = () => {
-        axios
-          .get('http://13.234.241.103:1880/latestgcl1')
-          .then((response) => {
-            const apiData = response.data;
-            const tableData = Object.keys(meterMapping).map((meterName, index) => {
-              const tag = meterMapping[meterName];
-              
-              // Fetch and round values to 2 decimal places
-              const current = parseFloat((apiData[`${tag}_CURRENT_TOTAL_A`] || 0).toFixed(2));
-              const voltage = parseFloat((apiData[`${tag}_VOLTAGE_L_L_AVG_V`] || 0).toFixed(2));
-              const power = parseFloat((apiData[`${tag}_ACTIVE_POWER_TOTAL_KW`] || 0).toFixed(2));
-      
-              return {
-                id: index + 1,
-                source: meterName,
-                current,
-                voltage,
-                power,
-                status: calculateStatus(current, voltage, power),
-              };
-            });
-            setMeterData(tableData);
-          })
-          .catch((error) => console.error('Error fetching data:', error));
-      };
-      
-  
-    useEffect(() => {
-      // Fetch data initially
-      fetchData();
-  
-      // Set interval to refresh data every 5 seconds
-      const intervalId = setInterval(fetchData, 5000);
-  
-      // Clear interval on component unmount
-      return () => clearInterval(intervalId);
-    }, []);
-  
-    const calculateStatus = (current, voltage, power) => {
-      if (current === 0 && voltage === 0 && power === 0) {
-        return 'red'; // All tags are 0
-      }
-      if (current === 0 || power === 0) {
-        return 'yellow'; // Current and power are 0
-      }
-      return 'green'; // Default to green
+  const [meterData, setMeterData] = useState([]);
+
+  const fetchData = () => {
+      axios
+        .get('http://13.234.241.103:1880/latestgcl1')
+        .then((response) => {
+          const apiData = response.data;
+          const tableData = Object.keys(meterMapping).map((meterName, index) => {
+            const tag = meterMapping[meterName];
+            
+            // Fetch and round values to 2 decimal places
+            const current = parseFloat((apiData[`${tag}_CURRENT_TOTAL_A`] || 0).toFixed(2));
+            const voltage = parseFloat((apiData[`${tag}_VOLTAGE_L_L_AVG_V`] || 0).toFixed(2));
+            let power = parseFloat((apiData[`${tag}_ACTIVE_POWER_TOTAL_KW`] || 0).toFixed(2));
+    
+            // Divide power by 1000 for Transformer 1 and Transformer 2
+            if (meterName === "Tranformer 1" || meterName === "Tranformer 2") {
+              power = parseFloat((power / 1000).toFixed(2));
+            }
+    
+            return {
+              id: index + 1,
+              source: meterName,
+              current,
+              voltage,
+              power,
+              status: calculateStatus(current, voltage, power),
+            };
+          });
+          setMeterData(tableData);
+        })
+        .catch((error) => console.error('Error fetching data:', error));
     };
-  
-    return (
-        <div className="flex-shrink-0 w-full p-6 h-[85vh] rounded-[8px] bg-[#f2f2f2] border-2 border-[grey] border-t-[4px] border-t-[#1d5999] opacity-75 relative">
-        {/* <div className="bg-white shadow-lg rounded-lg p-6"> */}
-        <h1 className="text-lg font-bold text-gray-700 mb-4">Meters Indication</h1>
-        <div className="h-[95%]  overflow-x-auto">
-          <table className="min-w-full table-auto border-collapse border border-gray-300 rounded-md">
-            <thead>
-              <tr className="bg-blue-500 text-white">
-                <th className="px-4 py-3 text-left font-medium">No.</th>
-                <th className="px-4 py-3 text-left font-medium">Sources</th>
-                <th className="px-4 py-3 text-center font-medium">Current Avg (A)</th>
-                <th className="px-4 py-3 text-center font-medium">Voltage L-L Avg (V)</th>
-                <th className="px-4 py-3 text-center font-medium">Real Power (kW)</th>
-                <th className="px-4 py-3 text-center font-medium">Status</th>
+
+  useEffect(() => {
+    // Fetch data initially
+    fetchData();
+
+    // Set interval to refresh data every 5 seconds
+    const intervalId = setInterval(fetchData, 5000);
+
+    // Clear interval on component unmount
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const calculateStatus = (current, voltage, power) => {
+    if (current === 0 && voltage === 0 && power === 0) {
+      return 'red'; // All tags are 0
+    }
+    if (current === 0 || power === 0) {
+      return 'yellow'; // Current and power are 0
+    }
+    return 'green'; // Default to green
+  };
+
+  return (
+      <div className="flex-shrink-0 w-full p-6 h-[85vh] rounded-[8px] bg-[#f2f2f2] border-2 border-[grey] border-t-[4px] border-t-[#1d5999] opacity-75 relative">
+      <h1 className="text-lg font-bold text-gray-700 mb-4">Meters Indication</h1>
+      <div className="h-[95%]  overflow-x-auto">
+        <table className="min-w-full table-auto border-collapse border border-gray-300 rounded-md">
+          <thead>
+            <tr className="bg-blue-500 text-white">
+              <th className="px-4 py-3 text-left font-medium">No.</th>
+              <th className="px-4 py-3 text-left font-medium">Sources</th>
+              <th className="px-4 py-3 text-center font-medium">Current Avg (A)</th>
+              <th className="px-4 py-3 text-center font-medium">Voltage L-L Avg (V)</th>
+              <th className="px-4 py-3 text-center font-medium">Real Power (kW)</th>
+              <th className="px-4 py-3 text-center font-medium">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {meterData.map((meter, index) => (
+              <tr
+                key={meter.id}
+                className={`text-sm ${
+                  index % 2 === 0 ? 'bg-gray-100' : 'bg-white'
+                } hover:bg-gray-200`}
+              >
+                <td className="px-4 py-3">{meter.id}</td>
+                <td className="px-4 py-3">{meter.source}</td>
+                <td className="px-4 py-3 text-center">{meter.current}</td>
+                <td className="px-4 py-3 text-center">{meter.voltage}</td>
+                <td className="px-4 py-3 text-center">{meter.power}</td>
+                <td className="px-4 py-3 text-center">
+                  <span
+                    className={`inline-block w-6 h-6 rounded-full ${
+                      meter.status === 'green'
+                        ? 'bg-green-500'
+                        : meter.status === 'yellow'
+                        ? 'bg-yellow-500'
+                        : 'bg-red-500'
+                    }`}
+                  ></span>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {meterData.map((meter, index) => (
-                <tr
-                  key={meter.id}
-                  className={`text-sm ${
-                    index % 2 === 0 ? 'bg-gray-100' : 'bg-white'
-                  } hover:bg-gray-200`}
-                >
-                  <td className="px-4 py-3">{meter.id}</td>
-                  <td className="px-4 py-3">{meter.source}</td>
-                  <td className="px-4 py-3 text-center">{meter.current}</td>
-                  <td className="px-4 py-3 text-center">{meter.voltage}</td>
-                  <td className="px-4 py-3 text-center">{meter.power}</td>
-                  <td className="px-4 py-3 text-center">
-                    <span
-                      className={`inline-block w-6 h-6 rounded-full ${
-                        meter.status === 'green'
-                          ? 'bg-green-500'
-                          : meter.status === 'yellow'
-                          ? 'bg-yellow-500'
-                          : 'bg-red-500'
-                      }`}
-                    ></span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+            ))}
+          </tbody>
+        </table>
       </div>
-    );
-  }
+    </div>
+  );
+}
+
+export default Status_table;
+
   
-  export default Status_table;
+ 

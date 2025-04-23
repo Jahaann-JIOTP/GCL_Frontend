@@ -1,3 +1,4 @@
+
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import Div from "@/components/Div";
@@ -6,8 +7,105 @@ import * as am4charts from "@amcharts/amcharts4/charts";
 import axios from "axios";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+// import { Sunrise, Sunset, Sun } from 'lucide-react';
+// import { CloudSun } from 'lucide-react'; // Partly cloudy icon
+import { MapPin } from 'lucide-react';
+// import { WiDaySunny } from 'react-icons/wi';
+import {
+  WiDaySunny,
+  WiRain,
+  WiDayCloudy,
+  WiCloud,
+  WiFog,
+  WiThunderstorm,
+  WiSnow,
+  WiSprinkle,
+  WiNa
+} from "react-icons/wi";
+
+
 
 function DashboardPage() {
+
+
+  const [energyLoading4, setenergyLoading4] = useState(false);
+  const [energyError4, setenergyError4] = useState(null);
+  const [loading1, setLoading1] = useState(false);
+  const [error1, setError1] = useState(null);
+  const [selectedPeriod, setSelectedPeriod] = useState("week");
+  const [expandedCards, setExpandedCards] = useState({ airConsumption1: false });
+  const [selectedCategory, setSelectedCategory] = useState("Solar Generation");
+  const [selectedTimePeriod, setSelectedTimePeriod] = useState("week");
+  const [loading2, setLoading2] = useState(false);
+  const [error2, setError2] = useState(null);
+  const [allproductionValue, setAllproductionValue] = useState(null); // Added state for consumption value
+
+  const [expanded, setExpanded] = useState(false);
+  const WeatherCard = ({ icon, label, temp, color = 'blue', precipitation }) => (
+    <div className="mt-[-18px] flex items-center justify-between p-4 rounded-lg shadow-md custom-weather-condition ">
+      <div className="flex items-center space-x-3">
+        <span className={`text-5xl text-${color}-600`}>{icon}</span>
+        <p className={`font-semibold text-3xl text-${color}-600`}>{label}</p>
+      </div>
+      <div className="text-center">
+        <p className={`text-4xl text-blue-600`}>{temp}°C</p>
+        {precipitation !== undefined && (
+          <>
+            {/* <hr className="my-2 border-t-2 border-gray-300 mt-10" /> */}
+            <p className="text-lg text-gray-600">{precipitation} mm</p>
+          </>
+        )}
+      </div>
+    </div>
+  );
+
+
+  const toggleExpand = (card) => {
+    setExpandedCards((prev) => ({
+      ...prev,
+      [card]: !prev[card],
+    }));
+  };
+
+  useEffect(() => {
+    fetchChartData1(selectedPeriod);
+  }, [selectedPeriod]);
+
+  const [weather, setWeather] = useState(null);
+  const [location, setLocation] = useState(null);
+
+  useEffect(() => {
+    // Fetching weather data
+    fetch(
+      "https://api.open-meteo.com/v1/forecast?latitude=31.5497&longitude=73.11076&current_weather=true&daily=sunrise,sunset,temperature_2m_min,temperature_2m_max,precipitation_sum,shortwave_radiation_sum&timezone=auto"
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("Weather Data:", data);
+        setWeather(data);
+      })
+      .catch((err) => console.error("Error fetching weather data:", err));
+
+
+
+    // Fetching location information using OpenCage Geocoding API (Reverse Geocoding)
+    // const geocodeUrl = `https://api.opencagedata.com/geocode/v1/json?q=31.5497+73.11076&key=YOUR_API_KEY`;
+    // fetch(geocodeUrl)
+    //   .then((res) => res.json())
+    //   .then((data) => {
+    //     console.log("Location Data:", data); // Debugging
+    //     if (data.results && data.results[0]) {
+    //       setLocation(data.results[0].formatted); // Set location as city and country
+    //     }
+    //   })
+    //   .catch((err) => console.error("Error fetching location data:", err));
+  }, []);
+
+
+
+  const handleCategoryChange = (event) => {
+    setSelectedCategory(event.target.value);
+  };
   const [startDate, setStartDate] = useState(
     new Date(new Date().setDate(new Date().getDate() - 1))
       .toISOString()
@@ -25,10 +123,11 @@ function DashboardPage() {
   const solarsVsTransformersChartRef = useRef(null);
   const productionChartRef = useRef(null);
   const [dateRange, setDateRange] = useState([
-    new Date(new Date().setDate(new Date().getDate() - 1)) ,// Start date default to today
+    new Date(new Date().setDate(new Date().getDate() - 1)),// Start date default to today
     new Date(), // End date default to today
   ]);
   const [startDate1, endDate1] = dateRange;
+
 
   const [solarStartDate, setSolarStartDate] = useState(
     new Date(new Date().setDate(new Date().getDate() - 0))
@@ -46,6 +145,15 @@ function DashboardPage() {
   const [transformerEndDate, setTransformerEndDate] = useState(
     new Date().toISOString().split("T")[0]
   );
+
+  const [transformer1StartDate, setTransformer1StartDate] = useState(
+    new Date(new Date().setDate(new Date().getDate() - 0))
+      .toISOString()
+      .split("T")[0]
+  );
+  const [transformer1EndDate, setTransformer1EndDate] = useState(
+    new Date().toISOString().split("T")[0]
+  );
   const [All_GensetStartDate, setAll_GensetStartDate] = useState(
     new Date(new Date().setDate(new Date().getDate() - 0))
       .toISOString()
@@ -54,10 +162,32 @@ function DashboardPage() {
   const [All_GensetEndDate, setAll_GensetEndDate] = useState(
     new Date().toISOString().split("T")[0]
   );
+  const [All_ConsumptionStartDate, setAll_ConsumptionStartDate] = useState(new Date().toISOString().split("T")[0]);
+
+
+
+  const [All_ConsumptionEndDate, setAll_ConsumptionEndDate] = useState(new Date().toISOString().split("T")[0]);
+  const [All_energyStartDate, setAll_energyStartDate] = useState(new Date().toISOString().split("T")[0]);
+
+  const [All_productionEndDate, setAll_productionEndDate] = useState(new Date().toISOString().split("T")[0]);
+  const [All_productionStartDate, setAll_productionStartDate] = useState(new Date().toISOString().split("T")[0]);
+
+
+
+
+
+  const [All_energyEndDate, setAll_energyEndDate] = useState(new Date().toISOString().split("T")[0]);
+
 
   const [solarValue, setSolarValue] = useState(null);
   const [transformerValue, setTransformerValue] = useState(null);
+  const [transformer1Value, setTransformer1Value] = useState(null);
   const [All_GensetValue, setAll_GensetValue] = useState(null);
+  const [All_ConsumptionValue, setAll_ConsumptionValue] = useState(null);
+  const [All_energyValue, setAll_energyValue] = useState(null);
+  const [All_productionValue, setAll_productionValue] = useState(null);
+
+
 
   const calculateDateRange = (range) => {
     const today = new Date();
@@ -109,6 +239,19 @@ function DashboardPage() {
       endDate0: end.toISOString().split("T")[0],
     };
   };
+
+  const [selectedDate, setSelectedDate] = useState("today");
+
+  const handleDropdownChange = (event) => {
+    setSelectedDate(event.target.value);
+    handleSolarDropdownChange(event);
+    handleTransformerDropdownChange(event);
+    handleTransformer1DropdownChange(event);
+    handleAll_GensetDropdownChange(event);
+    handleAll_ConsumptionDropdownChange(event);
+    handleAll_productionDropdownChange(event);
+    handleAll_UnaccountableEnergyDropdownChange(event);
+  };
   // console.log(startDate0, endDate0);
   const handleSolarDropdownChange = (e) => {
     const { startDate0, endDate0 } = calculateDateRange(e.target.value);
@@ -124,11 +267,37 @@ function DashboardPage() {
     setTransformerEndDate(endDate0);
   };
 
+  const handleTransformer1DropdownChange = (e) => {
+    const { startDate0, endDate0 } = calculateDateRange(e.target.value);
+    console.log(startDate0, endDate0);
+    setTransformer1StartDate(startDate0);
+    setTransformer1EndDate(endDate0);
+  };
+
   const handleAll_GensetDropdownChange = (e) => {
     const { startDate0, endDate0 } = calculateDateRange(e.target.value);
     console.log(startDate0, endDate0);
     setAll_GensetStartDate(startDate0);
     setAll_GensetEndDate(endDate0);
+  };
+
+  const handleAll_ConsumptionDropdownChange = (e) => {
+    const { startDate0, endDate0 } = calculateDateRange(e.target.value);
+    setAll_ConsumptionStartDate(startDate0);
+    setAll_ConsumptionEndDate(endDate0);
+  };
+
+  const handleAll_productionDropdownChange = (e) => {
+    const { startDate0, endDate0 } = calculateDateRange(e.target.value);
+    setAll_productionStartDate(startDate0);
+    setAll_productionEndDate(endDate0);
+  };
+
+  const handleAll_UnaccountableEnergyDropdownChange = (e) => {
+    const { startDate0, endDate0 } = calculateDateRange(e.target.value);
+    console.log(startDate0, endDate0);
+    setAll_energyStartDate(startDate0);
+    setAll_energyEndDate(endDate0);
   };
 
   useEffect(() => {
@@ -159,7 +328,7 @@ function DashboardPage() {
         .then((response) => response.json())
         .then((data) => {
           if (data && data.total_consumption) {
-            setTransformerValue(data.total_consumption.Transformers);
+            setTransformerValue(data.total_consumption.Transformers_Import);
           }
         })
         .catch((error) => {
@@ -172,6 +341,28 @@ function DashboardPage() {
 
     return () => clearInterval(interval); // Cleanup on component unmount
   }, [transformerStartDate, transformerEndDate]);
+
+
+  useEffect(() => {
+    const fetchTransformer1Data = () => {
+      const apiUrl = `http://15.206.128.214/Test_Api/solar_vs_trans.php?start_date=${transformer1StartDate}&end_date=${transformer1EndDate}`;
+      fetch(apiUrl)
+        .then((response) => response.json())
+        .then((data) => {
+          if (data && data.total_consumption) {
+            setTransformer1Value(data.total_consumption.Transformers_Export);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching Transformers data:", error);
+        });
+    };
+
+    fetchTransformer1Data(); // Initial fetch
+    const interval = setInterval(fetchTransformer1Data, 60000); // Fetch every 1 minute
+
+    return () => clearInterval(interval); // Cleanup on component unmount
+  }, [transformer1StartDate, transformer1EndDate]);
 
   useEffect(() => {
     const fetchAll_GensetData = () => {
@@ -195,6 +386,104 @@ function DashboardPage() {
   }, [All_GensetStartDate, All_GensetEndDate]);
 
   useEffect(() => {
+    const fetchAll_ConsumptionData = async () => {
+      const apiUrl = `http://15.206.128.214/Test_Api/total_consumption.php?start_date=${All_ConsumptionStartDate}&end_date=${All_ConsumptionEndDate}`;
+      console.log("Fetching:", apiUrl);
+
+      try {
+        const response = await fetch(apiUrl);
+        if (!response.ok) throw new Error("Network response was not ok");
+
+        const data = await response.json();
+        console.log("API Response:", data);
+
+        if (data?.total_consumption?.Total_Consumption) {
+          setAll_ConsumptionValue(parseFloat(data.total_consumption.Total_Consumption));
+        } else {
+          console.error("Invalid data format:", data);
+          setAll_ConsumptionValue(null);
+        }
+      } catch (error) {
+        console.error("Fetch error:", error);
+        setAll_ConsumptionValue(null);
+      }
+    };
+
+    fetchAll_ConsumptionData(); // Initial fetch
+    const interval = setInterval(fetchAll_ConsumptionData, 60000); // Refresh every 1 minute
+
+    return () => clearInterval(interval);
+  }, [All_ConsumptionStartDate, All_ConsumptionEndDate]);
+
+
+
+  useEffect(() => {
+    const fetchAll_productionData = async () => {
+      const apiUrl = `http://15.206.128.214/Test_Api/unaccoutable_energy.php?start_date=${All_productionStartDate}&end_date=${All_productionEndDate}`;
+      console.log("Fetching:", apiUrl);
+
+      try {
+        const response = await fetch(apiUrl);
+        if (!response.ok) throw new Error("Network response was not ok");
+
+        const data = await response.json();
+        console.log("API Response:", data);
+
+        if (data?.total_consumption?.totalproduction) {
+          setAll_productionValue(parseFloat(data.total_consumption.totalproduction));
+        } else {
+          console.error("Invalid data format:", data);
+          setAll_productionValue(null);
+        }
+      } catch (error) {
+        console.error("Fetch error:", error);
+        setAll_productionValue(null);
+      }
+    };
+
+    fetchAll_productionData(); // Initial fetch
+    const interval = setInterval(fetchAll_productionData, 60000); // Refresh every 1 minute
+
+    return () => clearInterval(interval);
+  }, [All_productionStartDate, All_productionEndDate]);
+
+
+
+
+
+
+  useEffect(() => {
+    const fetchAll_energyData = async () => {
+      const apiUrl = `http://15.206.128.214/Test_Api/unaccoutable_energy.php?start_date=${All_energyStartDate}&end_date=${All_energyEndDate}`;
+      console.log("Fetching:", apiUrl);
+
+      try {
+        const response = await fetch(apiUrl);
+        if (!response.ok) throw new Error("Network response was not ok");
+
+        const data = await response.json();
+        console.log("API Response:", data);
+
+        if (data?.total_consumption?.Unaccountable_Energy) {
+          setAll_energyValue(parseFloat(data.total_consumption.Unaccountable_Energy));
+        } else {
+          console.error("Invalid data format:", data);
+          setAll_energyValue(null);
+        }
+      } catch (error) {
+        console.error("Fetch error:", error);
+        setAll_energyValue(null);
+      }
+    };
+
+    fetchAll_energyData(); // Initial fetch
+    const interval = setInterval(fetchAll_energyData, 60000); // Refresh every 1 minute
+
+    return () => clearInterval(interval);
+  }, [All_energyStartDate, All_energyEndDate]);
+
+
+  useEffect(() => {
     const createProductionChart = async () => {
       const chartId = "productionChart";
       const chartContainer = document.getElementById(chartId);
@@ -204,7 +493,7 @@ function DashboardPage() {
         chart.logo.disabled = true;
 
         // Dynamic API URL for production chart
-        const apiUrl = `http://15.206.128.214/Test_API/solar_vs_trans_com.php?start_date=${startDate}&end_date=${endDate}&label=${timePeriod}`;
+        const apiUrl = `http://15.206.128.214/Test_Api/solar_vs_trans_com.php?start_date=${startDate}&end_date=${endDate}&label=${timePeriod}`;
 
         try {
           const response = await axios.get(apiUrl);
@@ -267,9 +556,9 @@ function DashboardPage() {
           );
           generatedPowerSeries.dataFields.valueY = "sum_avg_G2_U20_and_U_27";
           generatedPowerSeries.dataFields.dateX = "date";
-          generatedPowerSeries.name = "Generated Power";
+          generatedPowerSeries.name = "Solar Power";
           generatedPowerSeries.tooltipText =
-            "Generated Power: [bold]{valueY} kW[/]";
+            "Solar Power: [bold]{valueY} kW[/]";
           generatedPowerSeries.columns.template.fill = am4core.color("#219ebc");
 
           // Series for Transformer Power (Primary Y-Axis)
@@ -283,6 +572,17 @@ function DashboardPage() {
             "Transformers Power: [bold]{valueY} kW[/]";
           transformerPowerSeries.columns.template.fill =
             am4core.color("#023047");
+
+          const GensetPowerSeries = chart.series.push(
+            new am4charts.ColumnSeries()
+          );
+          GensetPowerSeries.dataFields.valueY = "sum_avg_G1_U16_and_G1_U17_and_G1_U18_and_G1_U19";
+          GensetPowerSeries.dataFields.dateX = "date";
+          GensetPowerSeries.name = "Genset Power";
+          GensetPowerSeries.tooltipText =
+            "Genset Power: [bold]{valueY} kW[/]";
+          GensetPowerSeries.columns.template.fill =
+            am4core.color("#d8e2dc");
 
           // Series for Solar Usage (Secondary Y-Axis)
           var solarUsageSeries = chart.series.push(new am4charts.LineSeries());
@@ -339,6 +639,9 @@ function DashboardPage() {
           chart.legend.labels.template.maxWidth = 100;
           chart.legend.scrollable = true;
           chart.legend.valueLabels.template.disabled = true;
+          chart.legend.marginTop = 20;
+          chart.legend.paddingBottom = 20; // Adjust the value as needed
+
 
           // Legend markers configuration
           var markerTemplate = chart.legend.markers.template;
@@ -581,67 +884,321 @@ function DashboardPage() {
     };
   }, [startDate1, endDate1]); // Re-fetch data when timePeriod changes
 
+
+  //last div
+
+  const fetchChartData1 = async (value) => {
+    setLoading1(true);
+    setError1(null);
+
+    const apiUrl1 = `http://15.206.128.214/Test_Api/total_consumption_pp.php?value=${value}`;
+
+    try {
+      const response = await fetch(apiUrl1);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log("Fetched Data for", value, ":", data); // Debugging
+      updateChart1(data, value);
+    } catch (err) {
+      setError1("Failed to fetch chart data.");
+      console.error("Error fetching chart data:", err);
+    } finally {
+      setLoading1(false);
+    }
+  };
+  const updateChart1 = (data, value) => {
+    // Create the chart instance in the container with id "chartdiv4"
+    const chart = am4core.create("chartdiv5", am4charts.XYChart);
+    if (chart.logo) {
+      chart.logo.disabled = true;
+    }
+
+    // Set up legend
+    chart.legend = new am4charts.Legend();
+    chart.legend.position = "bottom";
+    chart.legend.valign = "middle";
+    chart.legend.maxWidth = 180;
+    chart.legend.scrollable = true;
+    const markerTemplate = chart.legend.markers.template;
+    markerTemplate.width = 9;
+    markerTemplate.height = 9;
+    chart.legend.paddingBottom = 20;
+    chart.legend.labels.template.fontSize = "12px";
+
+    // Dynamic mapping based on the value parameter:
+    let xField, series1Field, series2Field, series1Name, series2Name;
+
+    if (value === "today") {
+      // Expected API output: { "Time": "00:00", "Yesterday_Flow": number, "Today_Flow": number }
+      xField = "Time";
+      series1Field = "Yesterday";
+      series2Field = "Today";
+      series1Name = "Yesterday(kWh)";
+      series2Name = "Today(kWh)";
+    } else if (value === "week") {
+      // Expected API output: { "Days": "Mon", "Last Week Flow": number, "This Week Flow": number }
+      xField = "Day";
+      series1Field = "Last Week";
+      series2Field = "This Week";
+      series1Name = "Last Week(kWh)";
+      series2Name = "This Week(kWh)";
+    } else if (value === "month") {
+      // Expected API output: { "Weeks": "Week1", "Last Month": number, "This Month": number }
+      xField = "Weeks";
+      series1Field = "Last Month";
+      series2Field = "This Month";
+      series1Name = "Last Month(kWh)";
+      series2Name = "This Month(kWh)";
+    } else if (value === "year") {
+      // Expected API output: { "Month": "Jan", "Previous Year": number, "Current Year": number }
+      xField = "Month";
+      series1Field = "Previous Year";
+      series2Field = "Current Year";
+      series1Name = "Previous Year(kWh)";
+      series2Name = "Current Year(kWh)";
+    } else {
+      // Fallback mapping (if needed)
+      xField = "Time";
+      series1Field = "Value1";
+      series2Field = "Value2";
+      series1Name = "Series 1";
+      series2Name = "Series 2";
+    }
+
+    // Set the chart data (ensure your backend sends valid JSON)
+    chart.data = data;
+
+    // Clear any existing axes and series
+    chart.xAxes.clear();
+    chart.yAxes.clear();
+    chart.series.clear();
+
+    // Configure X-Axis (CategoryAxis)
+    const xAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+    xAxis.dataFields.category = xField;
+    xAxis.renderer.grid.template.location = 0;
+    xAxis.renderer.line.strokeOpacity = 1;
+    xAxis.renderer.minGridDistance = 50;
+    xAxis.renderer.cellStartLocation = 0.1;
+    xAxis.renderer.cellEndLocation = 0.9;
+    xAxis.renderer.labels.template.fontSize = "12px";
+    chart.colors.list = [am4core.color("#67B7DC"), am4core.color("#1F5897")];
+
+    // Configure Y-Axis (ValueAxis)
+    const yAxis = chart.yAxes.push(new am4charts.ValueAxis());
+    yAxis.min = 0;
+    yAxis.renderer.labels.template.fontSize = "12px";
+
+    // Helper function: Create a column series
+    function createSeries(field, name) {
+      const series = chart.series.push(new am4charts.ColumnSeries());
+      series.dataFields.valueY = field;      // E.g., "Today_Flow" or "This Month"
+      series.dataFields.categoryX = xField;    // E.g., "Time" or "Weeks"
+      series.name = name;
+      series.columns.template.tooltipText = "{name}: [bold]{valueY}[/]";
+      series.columns.template.width = am4core.percent(50);
+      series.tooltip.pointerOrientation = "vertical";
+      series.tooltip.dy = -10;
+      series.tooltip.label.textAlign = "middle";
+      series.tooltip.background.stroke = am4core.color("#000");
+      series.tooltip.background.strokeWidth = 2;
+      return series;
+    }
+
+    // Create series for both groups:
+    createSeries(series1Field, series1Name);
+    createSeries(series2Field, series2Name);
+
+    // Add a cursor for interactivity
+    chart.cursor = new am4charts.XYCursor();
+  };
+
+
+  /// solar, genreration or genset
+
+  // API Endpoints
+  const categoryApis = {
+    "Solar Generation": "http://15.206.128.214/Test_Api/solar_pp.php?value=",
+    Genset: "http://15.206.128.214/Test_Api/Genset_pp.php?value=",
+    Transformer: "http://15.206.128.214/Test_Api/transformer_pp.php?value=",
+  };
+
+  useEffect(() => {
+    fetchChartData();
+  }, [selectedCategory, selectedTimePeriod]);
+
+  // Fetch Data and Update Chart
+  const fetchChartData = async () => {
+    setLoading2(true);
+    setError2(null);
+
+    const apiUrl = `${categoryApis[selectedCategory]}${selectedTimePeriod}`;
+    console.log("Fetching data from:", apiUrl); // Debugging
+
+    try {
+      const response = await axios.get(apiUrl);
+      console.log("API Response:", response.data);
+
+      if (!response.data || response.data.length === 0) {
+        setError2("No data available.");
+        return;
+      }
+
+      updateChart(response.data, selectedTimePeriod);
+    } catch (err) {
+      setError("Failed to fetch chart data.");
+      console.error("Error fetching data:", err);
+    } finally {
+      setLoading2(false);
+    }
+  };
+
+  // Update Chart Function
+  const updateChart = (data, value) => {
+    // Create the chart instance in the container with id "chartdiv4"
+    const chart = am4core.create("chartdiv4", am4charts.XYChart);
+    if (chart.logo) {
+      chart.logo.disabled = true;
+    }
+
+    // Set up legend
+    chart.legend = new am4charts.Legend();
+    chart.legend.position = "bottom";
+    chart.legend.valign = "middle";
+    chart.legend.maxWidth = 180;
+    chart.legend.scrollable = true;
+    const markerTemplate = chart.legend.markers.template;
+    markerTemplate.width = 9;
+    markerTemplate.height = 9;
+    chart.legend.paddingBottom = 20;
+    chart.legend.labels.template.fontSize = "12px";
+
+    // Dynamic mapping based on the value parameter:
+    let xField, series1Field, series2Field, series1Name, series2Name;
+
+    if (value === "today") {
+      // Expected API output: { "Time": "00:00", "Yesterday_Flow": number, "Today_Flow": number }
+      xField = "Time";
+      series1Field = "Yesterday";
+      series2Field = "Today";
+      series1Name = "Yesterday(kWh)";
+      series2Name = "Today(kWh)";
+    } else if (value === "week") {
+      // Expected API output: { "Days": "Mon", "Last Week Flow": number, "This Week Flow": number }
+      xField = "Day";
+      series1Field = "Last Week";
+      series2Field = "This Week";
+      series1Name = "Last Week(kWh)";
+      series2Name = "This Week(kWh)";
+    } else if (value === "month") {
+      // Expected API output: { "Weeks": "Week1", "Last Month": number, "This Month": number }
+      xField = "Weeks";
+      series1Field = "Last Month";
+      series2Field = "This Month";
+      series1Name = "Last Month(kWh)";
+      series2Name = "This Month(kWh)";
+    } else if (value === "year") {
+      // Expected API output: { "Month": "Jan", "Previous Year": number, "Current Year": number }
+      xField = "Month";
+      series1Field = "Previous Year";
+      series2Field = "Current Year";
+      series1Name = "Previous Year(kWh)";
+      series2Name = "Current Year(kWh)";
+    } else {
+      // Fallback mapping (if needed)
+      xField = "Time";
+      series1Field = "Value1";
+      series2Field = "Value2";
+      series1Name = "Series 1";
+      series2Name = "Series 2";
+    }
+
+    // Set the chart data (ensure your backend sends valid JSON)
+    chart.data = data;
+
+    // Clear any existing axes and series
+    chart.xAxes.clear();
+    chart.yAxes.clear();
+    chart.series.clear();
+
+    // Configure X-Axis (CategoryAxis)
+    const xAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+    xAxis.dataFields.category = xField;
+    xAxis.renderer.grid.template.location = 0;
+    xAxis.renderer.line.strokeOpacity = 1;
+    xAxis.renderer.minGridDistance = 50;
+    xAxis.renderer.cellStartLocation = 0.1;
+    xAxis.renderer.cellEndLocation = 0.9;
+    xAxis.renderer.labels.template.fontSize = "12px";
+    chart.colors.list = [am4core.color("#67B7DC"), am4core.color("#1F5897")];
+
+    // Configure Y-Axis (ValueAxis)
+    const yAxis = chart.yAxes.push(new am4charts.ValueAxis());
+    yAxis.min = 0;
+    yAxis.renderer.labels.template.fontSize = "12px";
+
+    // Helper function: Create a column series
+    function createSeries(field, name) {
+      const series = chart.series.push(new am4charts.ColumnSeries());
+      series.dataFields.valueY = field;      // E.g., "Today_Flow" or "This Month"
+      series.dataFields.categoryX = xField;    // E.g., "Time" or "Weeks"
+      series.name = name;
+      series.columns.template.tooltipText = "{name}: [bold]{valueY}[/]";
+      series.columns.template.width = am4core.percent(50);
+      series.tooltip.pointerOrientation = "vertical";
+      series.tooltip.dy = -10;
+      series.tooltip.label.textAlign = "middle";
+      series.tooltip.background.stroke = am4core.color("#000");
+      series.tooltip.background.strokeWidth = 2;
+      return series;
+    }
+
+    // Create series for both groups:
+    createSeries(series1Field, series1Name);
+    createSeries(series2Field, series2Name);
+
+    // Add a cursor for interactivity
+    chart.cursor = new am4charts.XYCursor();
+  };
+
+
+
   return (
-    <main className="p-1">
-      <div className="flex flex-wrap gap-2 h-[83vh] overflow:auto">
-        <Div
-          title={"Solar Generation"}
-          hide={"hidden"}
-          date_select={
-            <select
-              className="border-2 border-gray-300 rounded p-1 cursor-pointer w-[8vw] ml-2"
-              onChange={handleSolarDropdownChange}
-            >
-              <option value="today">Today</option>
-              <option value="yesterday">Yesterday</option>
-              <option value="this_week">This Week</option>
-              <option value="last_week">Last Week</option>
-              <option value="this_month">This Month</option>
-              <option value="last_month">Last Month</option>
-              <option value="this_year">This Year</option>
-            </select>
-          }
-          height={"130px"}
-          length={"w-full sm:w-[48%] lg:w-[31.6%]"}
-          className="flex items-center justify-center"
-        >
-          {solarValue !== null ? (
-            <p className="text-2xl font-bold text-center h-full pt-[50px]">
-              {solarValue.toFixed(2)} kWh
-            </p>
-          ) : (
-            <div className="flex items-center justify-center mt-4 overflow-hidden text-ellipsis">
-              <p>Loading...</p>
-            </div>
-          )}
-        </Div>
+    <main className="p-1 mt-[-12px]">
+    <div className="">
+      <label className="font-bold">Select Date Range:</label>
+      <select
+        className="border-2 mt-2 border-gray-300 rounded p-1 cursor-pointer w-[8vw]  ml-2 appearance-none bg-white text-gray-700 py-1 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        value={selectedDate}
+        onChange={handleDropdownChange}
+      >
+        <option value="today">Today</option>
+        <option value="yesterday">Yesterday</option>
+        <option value="this_week">This Week</option>
+        <option value="last_week">Last Week</option>
+        <option value="this_month">This Month</option>
+        <option value="last_month">Last Month</option>
+        <option value="this_year">This Year</option>
+      </select>
+    </div>
+    <div className=" h-[83vh] overflow:auto">
+      <div className="flex flex-wrap lg:flex-nowrap gap-2 mt-[-30px]">
         {/* Transformers Div */}
         <Div
           title={
             <span
               className="truncate max-w-[11.5rem] block cursor-pointer"
-              title="Transformer Consumption" // Tooltip on hover
+              title="FESCO"
             >
-              Transformer Consumption
+              FESCO Import
             </span>
           }
           hide={"hidden"}
-          date_select={
-            <select
-              className="border-2 border-gray-300 rounded p-1 cursor-pointer w-[8vw] ml-2"
-              onChange={handleTransformerDropdownChange}
-            >
-              <option value="today">Today</option>
-              <option value="yesterday">Yesterday</option>
-              <option value="this_week">This Week</option>
-              <option value="last_week">Last Week</option>
-              <option value="this_month">This Month</option>
-              <option value="last_month">Last Month</option>
-              <option value="this_year">This Year</option>
-            </select>
-          }
           height={"130px"}
-          length={"w-full sm:w-[48%] lg:w-[31.6%]"}
+          length="w-full sm:w-[44.5%] md:w-[32%] lg:w-[24.5%] mt-10 border-t-[5px] border-[#1f5897]"
           className="flex items-center justify-center"
         >
           {transformerValue !== null ? (
@@ -654,34 +1211,66 @@ function DashboardPage() {
             </div>
           )}
         </Div>
-        {/* All_Genset Div */}
+
+        {/* Solar Generation Div */}
         <Div
-          // title={"All Genset Main Incoming"}
+          title={"Solar Generation"}
+          hide={"hidden"}
+          height={"130px"}
+          length="w-full sm:w-[44.5%] md:w-[32%] lg:w-[24.5%] mt-10 border-t-[5px] border-[#1f5897]"
+          className="flex items-center justify-center"
+        >
+          {solarValue !== null ? (
+            <p className="text-2xl font-bold text-center h-full pt-[50px]">
+              {solarValue.toFixed(2)} kWh
+            </p>
+          ) : (
+            <div className="flex items-center justify-center mt-4 overflow-hidden text-ellipsis">
+              <p>Loading...</p>
+            </div>
+          )}
+        </Div>
+
+        {/* WAPDA Export Div */}
+        <Div
           title={
             <span
-              className="truncate max-w-[11.7rem] block cursor-pointer"
-              title="All Genset Main Incoming" // Tooltip on hover
+              className="truncate max-w-[11.5rem] block cursor-pointer"
+              title="FESCO"
             >
-              All Genset Main Incoming
+              FESCO Export
             </span>
           }
           hide={"hidden"}
-          date_select={
-            <select
-              className="border-2 border-gray-300 rounded p-1 cursor-pointer w-[8vw] ml-2"
-              onChange={handleAll_GensetDropdownChange}
-            >
-              <option value="today">Today</option>
-              <option value="yesterday">Yesterday</option>
-              <option value="this_week">This Week</option>
-              <option value="last_week">Last Week</option>
-              <option value="this_month">This Month</option>
-              <option value="last_month">Last Month</option>
-              <option value="this_year">This Year</option>
-            </select>
-          }
           height={"130px"}
-          length={"w-full sm:w-[48%] lg:w-[31.6%]"}
+          length="w-full sm:w-[44.5%] md:w-[32%] lg:w-[24.5%] mt-10 border-t-[5px] border-[#1f5897]"
+          className="flex items-center justify-center"
+        >
+          {typeof transformer1Value === "number" &&
+          !isNaN(transformer1Value) ? (
+            <p className="text-2xl font-bold text-center h-full pt-[50px]">
+              {transformer1Value.toFixed(2)} kWh
+            </p>
+          ) : (
+            <div className="flex items-center justify-center mt-4 overflow-hidden text-ellipsis">
+              <p>Loading...</p>
+            </div>
+          )}
+        </Div>
+
+        {/* Total Genset Div */}
+        <Div
+          title={
+            <span
+              className="truncate max-w-[11.5rem] block cursor-pointer"
+              title="All Genset"
+            >
+             Total Genset
+            </span>
+          }
+          hide={"hidden"}
+          height={"130px"}
+          length="w-full sm:w-[44.5%] md:w-[32%] lg:w-[24.5%] mt-10 border-t-[5px] border-[#1f5897]"
           className="flex items-center justify-center"
         >
           {All_GensetValue !== null ? (
@@ -694,30 +1283,376 @@ function DashboardPage() {
             </div>
           )}
         </Div>
-        <div className="flex flex-wrap lg:flex-nowrap gap-4 w-full">
-          <div className="w-full lg:w-[31.6%] xl:w-[25.8%]  bg-white shadow-md rounded-xl p-3 h-[34vh] shadow-[rgba(0, 0, 0, 0.24) 0px 3px 8px">
-            {/* Header Section */}
-            <div className="flex justify-between items-center">
-              <h3 className="text-md font-bold text-gray-500">Weather</h3>
+      </div>
+
+      <div className="flex flex-wrap gap-2 lg:flex-nowrap">
+        <Div
+          title={
+            <span
+              className="w-full inline-block cursor-pointer text-center whitespace-nowrap overflow-visible"
+              title="Total Generation (Solar+FESCO(I)+Genset)"
+            >
+              Total Generation (Solar+FESCO(I)+Genset)
+            </span>
+          }
+          hide={"hidden"}
+          height={"130px"}
+          length={
+            "w-full sm:w-[49%] lg:w-[32.6%] border-t-[5px] border-[#1f5897]"
+          }
+          className="flex items-center justify-center"
+        >
+          {All_ConsumptionValue !== null ? (
+            <p className="text-2xl font-bold text-center h-full pt-[50px]">
+              {All_ConsumptionValue.toFixed(2)} kWh
+            </p>
+          ) : (
+            <div className="flex items-center justify-center mt-4 overflow-hidden text-ellipsis">
+              <p>Loading...</p>
             </div>
+          )}
+        </Div>
 
-            {/* Content */}
+        <Div
+          title={
+            <span
+              className="truncate max-w-[11.5rem] block cursor-pointer"
+              title="Total Consumption"
+            >
+              Total Consumption
+            </span>
+          }
+          hide={"hidden"}
+          height={"130px"}
+          length={
+            "w-full sm:w-[49%] lg:w-[32.8%] border-t-[5px] border-[#1f5897]"
+          }
+          className="flex items-center justify-center"
+        >
+          {All_productionValue !== null ? (
+            <p className="text-2xl font-bold text-center h-full pt-[50px]">
+              {All_productionValue.toFixed(2)} kWh
+            </p>
+          ) : (
+            <div className="flex items-center justify-center mt-4 overflow-hidden text-ellipsis">
+              <p>Loading...</p>
+            </div>
+          )}
+        </Div>
 
-            <iframe
-              width="100%"
-              height="89%"
-              src="https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=default&metricTemp=default&metricWind=default&zoom=7&overlay=wind&product=ecmwf&level=surface&lat=31.451&lon=73.027&detailLat=31.451&detailLon=73.027&detail=true"
-              frameborder="0"
-            ></iframe>
+        <Div
+          title={
+            <span
+              className="cursor-pointer whitespace-nowrap"
+              title="Unaccounted Energy"
+            >
+              Unaccounted Energy
+            </span>
+          }
+          hide={"hidden"}
+          height={"130px"}
+          length={
+            "w-full sm:w-[49.5%] lg:w-[33.2%]  border-t-[5px] border-[#1f5897]"
+          }
+          className="flex items-center justify-center"
+        >
+          {All_energyValue !== null ? (
+            <p className="text-2xl font-bold text-center h-full pt-[50px]">
+              {All_energyValue.toFixed(2)} kWh
+            </p>
+          ) : (
+            <div className="flex items-center justify-center mt-4 overflow-hidden text-ellipsis">
+              <p>Loading...</p>
+            </div>
+          )}
+        </Div>
+        </div>
+        <div className="flex flex-wrap gap-2 ">
+        <div className="flex flex-wrap lg:flex-nowrap gap-4 w-full ">
+          <div className="relative w-full lg:w-[35%] xl:w-[30%] border-t-[5px] border-[#1F5897] rounded-xl max-h-[34vh] shadow-lg overflow-auto">
+            {/* Background Layer */}
+            <div
+              className="absolute inset-0 bg-[#f2f2f2] rounded-xl"
+              style={{ opacity: 0.5 }}
+            ></div>
+
+            {/* Content Layer */}
+            <div className="relative z-10 p-3 px-4">
+              {/* Header Section */}
+              <div className="flex justify-between items-center border-b border-white mt-[2px]">
+                <h2 className="text-lg font-semibold text-gray-700">
+                  Weather
+                </h2>
+              </div>
+
+              {/* Location */}
+              <div className="text-sm text-gray-600 mt-2 flex items-center gap-1">
+                <MapPin className="w-4 h-4 text-red-500" />
+                <span className="font-medium">Pakistan, Faisalabad</span>
+              </div>
+
+              {/* Temperature Section */}
+              <div className="mt-2">
+                {weather &&
+                weather.daily &&
+                weather.daily.temperature_2m_max?.[0] &&
+                weather.daily.temperature_2m_min?.[0] ? (
+                  <div className="flex justify-end text-lg font-semibold mt-[-25px] mb-3 mr-2">
+                    <div className="flex flex-col items-center mr-8">
+                      <p className="text-xs text-black">MIN</p>
+                      <span className="text-sm font-light">
+                        {weather.daily.temperature_2m_min[0]}°C
+                      </span>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <p className="text-xs text-black">MAX</p>
+                      <span className="text-sm font-light">
+                        {weather.daily.temperature_2m_max[0]}°C
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-center text-gray-600">
+                    Temperature data not available
+                  </p>
+                )}
+              </div>
+
+              {/* WeatherCard Section */}
+              {weather && weather.current_weather ? (
+                (() => {
+                  const code = weather.current_weather.weathercode;
+                  const temp = weather.current_weather.temperature;
+                  const precipitation =
+                    weather.daily?.precipitation_sum?.[0] ?? "N/A";
+
+                  if ([61, 63, 65, 80, 81, 82].includes(code)) {
+                    return (
+                      <WeatherCard
+                        icon={
+                          <img
+                            src="Rainy.png"
+                            alt="Rainy"
+                            className="w-[6vw] h-[5vw]"
+                          />
+                        }
+                        label="Rainy"
+                        temp={temp}
+                        color="blue"
+                        precipitation={precipitation}
+                      />
+                    );
+                  } else if ([0, 1].includes(code)) {
+                    return (
+                      <WeatherCard
+                        icon={
+                          <img
+                            src="sun.png"
+                            alt="Sunny"
+                            className="w-[6vw] h-[5vw]"
+                          />
+                        }
+                        label="Sunny"
+                        temp={temp}
+                        color="yellow"
+                      />
+                    );
+                  } else if (code === 2) {
+                    return (
+                      <WeatherCard
+                        icon={
+                          <img
+                            src="partly_cloudy.png"
+                            alt="Partly Cloudy"
+                            className="w-[6vw] h-[5vw]"
+                          />
+                        }
+                        label="Partly Cloudy"
+                        temp={temp}
+                        color="gray"
+                      />
+                    );
+                  } else if (code === 3) {
+                    return (
+                      <WeatherCard
+                        icon={
+                          <img
+                            src="overcast.png"
+                            alt="Overcast"
+                            className="w-[6vw] h-[5vw]"
+                          />
+                        }
+                        label="Overcast"
+                        temp={temp}
+                        color="gray"
+                      />
+                    );
+                  } else if ([45, 48].includes(code)) {
+                    return (
+                      <WeatherCard
+                        icon={
+                          <img
+                            src="fog.png"
+                            alt="Fog"
+                            className="w-[6vw] h-[5vw]"
+                          />
+                        }
+                        label="Fog"
+                        temp={temp}
+                        color="gray"
+                      />
+                    );
+                  } else if ([95, 96, 99].includes(code)) {
+                    return (
+                      <WeatherCard
+                        icon={
+                          <img
+                            src="thunder_storm.png"
+                            alt="Thunderstorm"
+                            className="w-[6vw] h-[5vw]"
+                          />
+                        }
+                        label="Thunderstorm"
+                        temp={temp}
+                        color="purple"
+                      />
+                    );
+                  } else if ([71, 73, 75, 77, 85, 86].includes(code)) {
+                    return (
+                      <WeatherCard
+                        icon={
+                          <img
+                            src="snowy.png"
+                            alt="Snow"
+                            className="w-[6vw] h-[5vw]"
+                          />
+                        }
+                        label="Snow"
+                        temp={temp}
+                        color="blue"
+                      />
+                    );
+                  } else if ([51, 53, 55, 56, 57].includes(code)) {
+                    return (
+                      <WeatherCard
+                        icon={
+                          <img
+                            src="drizzle.png"
+                            alt="Drizzle"
+                            className="w-[6vw] h-[5vw]"
+                          />
+                        }
+                        label="Drizzle"
+                        temp={temp}
+                        color="teal"
+                      />
+                    );
+                  } else {
+                    return (
+                      <WeatherCard
+                        icon={<WiNa className="text-7xl" />}
+                        label="Unknown Weather"
+                        temp={temp}
+                        color="gray"
+                      />
+                    );
+                  }
+                })()
+              ) : (
+                <div className="mt-4 p-4 rounded-lg shadow-md bg-gray-100 text-center text-gray-500">
+                  Weather data not available.
+                </div>
+              )}
+
+              {/* <hr className="my-2 border-t-2 border-gray-300 mt-[-6px]" /> */}
+
+              {/* Sunrise, Sunset, Radiation */}
+              <div className="grid grid-cols-3 gap-2 h-[5.5vw]">
+                {/* Sunrise */}
+                <div className="flex flex-col items-center p-2 rounded-lg shadow-md max-w-[200px]">
+                  <div className="flex flex-col items-center gap-2">
+                    <img
+                      src="sunrise.png"
+                      alt="Sunrise"
+                      className="w-10 h-10 mt-2"
+                    />
+                    <span className="text-xs font-semibold text-black">
+                      Sunrise
+                    </span>
+                    {weather?.daily?.sunrise?.[0] ? (
+                      <p className="text-sm text-gray-800">
+                        {new Date(
+                          weather.daily.sunrise[0]
+                        ).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </p>
+                    ) : (
+                      <p className="text-sm text-gray-400">
+                        Loading sunrise...
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Sunset */}
+                <div className="flex flex-col items-center p-2 rounded-lg shadow-md max-w-[200px]">
+                  <div className="flex flex-col items-center gap-2">
+                    <img
+                      src="sunset.png"
+                      alt="Sunset"
+                      className="w-10 h-10 mt-2"
+                    />
+                    <span className="text-xs font-semibold text-black">
+                      Sunset
+                    </span>
+                    {weather?.daily?.sunset?.[0] ? (
+                      <p className="text-sm text-gray-800">
+                        {new Date(weather.daily.sunset[0]).toLocaleTimeString(
+                          [],
+                          {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          }
+                        )}
+                      </p>
+                    ) : (
+                      <p className="text-sm text-gray-400">
+                        Sunset time loading...
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Radiation */}
+                <div className="flex flex-col items-center p-2 rounded-lg shadow-md max-w-[200px]">
+                  <div className="flex flex-col items-center gap-2">
+                    <WiDaySunny className="text-yellow-500 w-10 h-10 mt-2" />
+                    <span className="text-xs font-semibold text-black">
+                      Radiation
+                    </span>
+                    <p className="text-sm text-gray-800 mt-[-8px]">
+                      {weather?.daily?.shortwave_radiation_sum?.[0] !==
+                      undefined
+                        ? `${weather.daily.shortwave_radiation_sum[0]}`
+                        : "Loading..."}
+                      &#160;W/m²
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
+
           <Div
-            title="Production & Consumption"
+            title="Plant Resources Power Comparison And Solar Efficiency"
             height={"34vh"}
-            length="w-full lg:w-[68.7%] md:w-full"
+            length="w-full lg:w-[68.5%] md:w-full border-t-[5px] border-[#1f5897]"
           >
             <br></br>
-            <h4 className="text-[0.7] float-left mr-10 mt-[-2px]">
-              <div className="flex justify-between items-center mb-2">
+            <h4 className="text-[0.7vw] float-right">
+              <div className="flex justify-between items-center mb-2 ">
                 <div className="flex gap-4 items-center text-[0.7vw]">
                   <div className="flex items-center">
                     <label htmlFor="p_startDate" className="mr-2">
@@ -778,71 +1713,141 @@ function DashboardPage() {
             </h4>
 
             {/* The original chart container */}
-            <div id="productionChart" className="w-full h-[94%] mt-4"></div>
+            <div id="productionChart" className="w-full h-[30vh] mt-4 "></div>
           </Div>
         </div>
-        <div className="mt-[-5px]  ml-2 w-[90%] flex items-center flex-wrap gap-4">
-          <div className="flex items-center">
-            <label className="mr-2">Start Date:</label>
-            <DatePicker
-              selected={startDate1}
-              onChange={(date) => setDateRange([date, endDate1])} // Update the start date while keeping the end date
-              className="px-2 py-1 text-[0.9vw] border border-gray-300 rounded-md mr-4 w-[120px]"
-              placeholderText="Select Start Date"
-            />
-          </div>
-          <div className="flex items-center">
-            <label className="mr-2">End Date:</label>
-            <DatePicker
-              selected={endDate1}
-              onChange={(date) => setDateRange([startDate1, date])} // Update the end date while keeping the start date
-              className="px-2 py-1 text-[0.9vw] border border-gray-300 rounded-md mr-4 w-[120px]"
-              placeholderText="Select End Date"
-            />
+        <div
+          className={`transition-all duration-300 shadow-md rounded-md overflow-hidden ${
+            expanded
+              ? "absolute top-0 left-0 w-full h-screen z-[999] border-t-[5px] border-[rgb(94,140,192)] p-6"
+              : "relative w-full max-w-[92%] sm:max-w-[73%] md:max-w-[64%] lg:max-w-[59%] xl:max-w-[49%] h-[30vh] border-t-[5px] border-[rgb(94,140,192)] p-4"
+          }`}
+        >
+          {/* Background Layer */}
+          <div
+            className="absolute inset-0 bg-white"
+            style={{ opacity: 0.5 }}
+          ></div>
+
+          {/* Foreground Content */}
+          <div className="relative z-10 h-full flex flex-col justify-between">
+            <div className="flex justify-between items-center">
+              <h3 className="text-md font-bold text-gray-700">
+                {selectedCategory}
+              </h3>
+              <div className="flex space-x-2 mt-[-8px]">
+                <select
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="w-[160px] text-gray-600 text-sm bg-white border border-gray-300 rounded-md px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                >
+                  <option value="Solar Generation">Solar Generation</option>
+                  <option value="FESCO">FESCO</option>
+                  <option value="Genset">Genset</option>
+                </select>
+                <select
+                  value={selectedTimePeriod}
+                  onChange={(e) => setSelectedTimePeriod(e.target.value)}
+                  className="w-[160px] text-gray-600 text-sm bg-white border border-gray-300 rounded-md px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                >
+                  <option value="month">This Month over Last Month</option>
+                  <option value="week">This Week over Last Week</option>
+                  <option value="today">Today over Yesterday</option>
+                  <option value="year">This Year over Last Year</option>
+                </select>
+
+                {/* Expand Button */}
+                <button
+                  onClick={() => setExpanded(!expanded)}
+                  className="p-1 font-bold text-[20px]"
+                  title={expanded ? "Minimize" : "Maximize"}
+                >
+                  {expanded ? "⛶" : "⛶"}
+                </button>
+              </div>
+            </div>
+
+            {/* Chart Container */}
+            <div className="relative w-full h-full">
+              {(loading2 || error2) && (
+                <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-50 z-10">
+                  {loading2 && (
+                    <p className="text-gray-500 text-lg mt-[-80px]">
+                      Loading...
+                    </p>
+                  )}
+                  {error1 && <p className="text-red-500 text-lg">{error2}</p>}
+                </div>
+              )}
+              <div id="chartdiv4" className="w-full h-full mt-[18px]"></div>
+            </div>
           </div>
         </div>
-        
 
-        <Div
-          title={"Solars vs Transformers vs All_Genset"}
-          height={"30vh"}
-          length={"w-full md:w-[48%] lg:w-[31.6%]"}
+        <div
+          className={`relative overflow-hidden transition-all duration-300 shadow-md rounded-md border-t-[5px] border-[rgb(94,140,192)] ${
+            expandedCards?.airConsumption1
+              ? "absolute top-0 left-0 w-full h-screen z-[999] p-6"
+              : "w-full sm:w-[74%] md:w-[64%] lg:w-[60%] xl:w-[50%] h-[30vh]"
+          }`}
         >
+          {/* Background Layer */}
           <div
-            id="solarsVsTransformersChart"
-            className="mt-12"
-            style={{ width: "100%", height: "87%" }}
+            className="absolute inset-0 bg-white"
+            style={{ opacity: 0.4 }}
           ></div>
-        </Div>
-        <Div
-          title={"Solar_1 vs Solar_2"}
-          height={"30vh"}
-          length={"w-full md:w-[48%] lg:w-[31.6%]"}
-        >
-          <div
-            id="solarPieChart"
-            className="mt-12"
-            style={{ width: "100%", height: "87%" }}
-          ></div>
-        </Div>
-        <Div
-          title={"Transformer_1 vs Transformer_2"}
-          height={"30vh"}
-          length={"w-full md:w-[48%] lg:w-[31.6%]"}
-        >
-          <div
-            id="transformerPieChart"
-            className="mt-12"
-            style={{ width: "100%", height: "87%" }}
-          ></div>
-        </Div>
-        {/* <Div title={"Transformer_1 vs Transformer_2"} height={"30vh"} length={"lg:w-[31.6%] xl:w-[31.8%"}>
 
-            <div id="" className="mt-12" style={{ width: "100%", height: "87%" }}></div>
-          </Div> */}
+          {/* Foreground Content */}
+          <div className="relative z-10 h-full flex flex-col justify-between">
+            <div className="flex justify-between items-center px-2 py-1">
+              <h3 className="text-md font-bold text-gray-700 truncate">
+                Total Generation
+              </h3>
+
+              <div className="flex items-center space-x-2">
+                <select
+                  id="timePeriod"
+                  className="w-[160px] text-gray-600 text-sm bg-white border border-gray-300 rounded-md px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  onChange={(e) => setSelectedPeriod(e.target.value)}
+                  value={selectedPeriod}
+                >
+                  <option value="month">This Month over Last Month</option>
+                  <option value="week">This Week over Last Week</option>
+                  <option value="today">Today over Yesterday</option>
+                  <option value="year">This Year over Last Year</option>
+                </select>
+
+                <button
+                  onClick={() => toggleExpand("airConsumption1")}
+                  className="p-1 font-bold text-[20px]"
+                  title={
+                    expandedCards?.airConsumption1 ? "Minimize" : "Maximize"
+                  }
+                >
+                  {expandedCards?.airConsumption1 ? "⛶" : "⛶"}
+                </button>
+              </div>
+            </div>
+
+            <div className="relative w-full h-[90%]">
+              {(loading1 || error1) && (
+                <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-50 z-10">
+                  {loading1 && (
+                    <p className="text-gray-500 text-lg mt-[-80px]">
+                      Loading...
+                    </p>
+                  )}
+                  {error1 && <p className="text-red-500 text-lg">{error1}</p>}
+                </div>
+              )}
+              <div id="chartdiv5" className="w-full h-full mt-[15px]"></div>
+            </div>
+          </div>
+        </div>
       </div>
-    </main>
-  );
+    </div>
+  </main>
+);
 }
 
 export default DashboardPage;

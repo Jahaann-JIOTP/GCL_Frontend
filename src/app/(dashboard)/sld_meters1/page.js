@@ -16,72 +16,14 @@ const MeterDataComponent = () => {
 
   // Dynamically generate the href for the current tab
   const getHrefForAction = () =>
-    `/Logs?type=${activeTab}&&id=${id}&&meter=${meter}`;
+    `/Logs1?type=${activeTab}&&id=${id}&&meter=${meter}`;
 
   // Set the title based on the meter
   useEffect(() => {
     const meterTitles = {
-      G2_U20: "Solar 1",
       
-      U_24: " Trafo1",
-      U_25: "Trafo2",
-      U_2: "Ball Mill 4",
-      U_3: "Masjid",
-      U_4: " glaze line 2",
-      U_5: "Sorting & Packing Line",
-      U_6: "Digital Printing Machine",
-      U_7: "Colony D.B",
-      U_8: "Light D.B # 02",
-      U_9: "Kiln Blower Fan - (R.V.E)",
-      U_10: "Belt 300 Feeding to Press PH4300",
-      U_11: "Belt 200 Feeding to Silo",
-      U_12: "Glaze Line 1",
-      U_13: "Perklin + Kiln",
-      U_14: "Layer Dryer",
-      U_15: "Spare 01",
-      U_16: "Laboratory",
-      U_17: "Air Compressor 1",
-      U_18: "Light D.B 1",
-      U_19: "Kiln Loading Machine with Compensation",
-      U_20: "Glaze Ball Mill 13500L-2/9500L-1",
-      U_21: "Press PH 4300/1750-2",
-      U_22: "Lightning Plant",
-      U_23: "Ball Mill 1",
-      G1_U2: "Polishing Line 5",
-      G1_U3: " Polishing Line 6",
-      G1_U4: "Glaze Ball Mill 13500L-2",
-      G1_U5: "Polishing Line 7",
-      G1_U6: "Air Compressor 2",
-      G1_U7: "Glaze Ball Mill 9500L-3",
-      G1_U8: "Spare 02",
-      G1_U10: "Spare 04",
-      G1_U11: "5 Layer Dryer",
-      G1_U12: "5 Layer Dryer Unloading Machine",
-      G1_U13: "Rental Genset",
-      G1_U14: "Water Treatment Area",
-      G1_U15: "Spare 05",
-      // G1_U16: "Spare 06",
-      
-     
+      U_27: "Solar 2",
     
-      G2_U2: "Press PH 4300/1750-1",
-      G2_U3: "Ball Mills 03",
-      G2_U4: "Hard Material",
-      G2_U7: "Polishing Line 1",
-      G2_U8: "Polishing Line 2",
-      G2_U9: "Fan for Spray Dryer",
-      G2_U10: "Slip Piston Pumps & Transfer Tanks",
-      G2_U12: "Coal Stove & Coal Conveyor",
-      G2_U13: "ST Motor & Iron Remove",
-      G2_U14: "Polishing Line 3",
-      G2_U11: "Gaze Tank-1",
-      G2_U15: "Polishing Line 4",
-      G2_U16: "Belt 100 Feeding to BM500",
-      G2_U17: "No Combustion System*",
-      G2_U18: "Digital Printing Machine",
-      G2_U5: "Spare 07",
-      G2_U19: "Air Compressor 3",
-      G2_U6: "Air Compressor 4",
     };
     setCurrentTitle(meterTitles[meter] || "Unknown Meter");
   }, [meter]);
@@ -121,17 +63,17 @@ const MeterDataComponent = () => {
 
   // Update the API endpoint link when the meter changes
   useEffect(() => {
-    setLink(`http://15.206.128.214/Test_Api/volts_data.php?meter=${meter}`);
+    setLink(`http://15.206.128.214/Test_Api/solar2_volts_data.php?meter=${meter}`);
   }, [meter]);
   const handleTabSwitch = (tab) => {
     setActiveTab(tab);
 
     if (tab === "volts") {
-      setLink(`http://15.206.128.214/Test_Api/volts_data.php?meter=${meter}`);
+      setLink(`http://15.206.128.214/Test_Api/solar2_energy_data.php?meter=${meter}`);
     } else if (tab === "power") {
       setLink(`http://15.206.128.214/Test_Api/power_data.php?meter=${meter}`);
     } else if (tab === "energy") {
-      setLink(`http://15.206.128.214/Test_Api/energy_data.php?meter=${meter}`);
+      setLink(`http://15.206.128.214/Test_Api/solar2_energy_data.php?meter=${meter}`);
     } else {
       setLink(""); // Handle other cases if needed
     }
@@ -156,9 +98,8 @@ const MeterDataComponent = () => {
             CURRENT_LINE_2_A: { left: "270pt", top: "153pt", unit: "A b" },
             CURRENT_LINE_3_A: { left: "270pt", top: "230pt", unit: "A a" },
             // CURRENT_TOTAL_A: { left: "270pt", top: "330pt", unit: "A " },
-           
-                  CURRENT_TOTAL_A: { left: "270pt", top: "330pt", unit: "A " },
-              
+           CURRENT_AVG_A: { left: "270pt", top: "330pt", unit: "A " },
+             
             ACTIVE_POWER_P1_KW: { left: "400pt", top: "70pt", unit: "kW c" },
             ACTIVE_POWER_P2_KW: { left: "400pt", top: "153pt", unit: "kW b" },
             ACTIVE_POWER_P3_KW: { left: "400pt", top: "230pt", unit: "kW a" },
@@ -201,12 +142,17 @@ const MeterDataComponent = () => {
             APPARENT_POWER_TOTAL_KVA: { left: "860pt", top: "377pt" },
           }
         : {
-            ACTIVE_ENERGY_IMPORT_KWH: { left: "292pt", top: "145pt" },
+            // Energy tags for
+            // activeTab === "energy"
+
+             ACTIVE_ENERGY_IMPORT_KWH: { left: "292pt", top: "145pt" },
+
             REACTIVE_ENERGY_IMPORT_KVARH: { left: "460pt", top: "145pt" },
-            APPARENT_ENERGY_KVAH: { left: "630pt", top: "145pt" },
-           
-           
-            
+            ACTIVE_ENERGY_EXPORT_KWH: { left: "292pt", top: "210pt" },
+            APPARENT_ENERGY_EXPORT_KVAH: { left: "630pt", top: "210pt" },
+            REACTIVE_ENERGY_EXPORT_KVARH: { left: "460pt", top: "210pt" },
+            APPARENT_ENERGY_IMPORT_KVAH: { left: "630pt", top: "145pt" },
+             
 
             // //ye tags nai ha that is used to showing N/A
             ActiveEnergy_DelmRec_Wh: { left: "280pt", top: "275pt" },
@@ -215,9 +161,6 @@ const MeterDataComponent = () => {
             ActiveEnergy_DelpRec_Wh: { left: "280pt", top: "335pt" },
             ReactiveEnergy_DelpRec_VARh: { left: "450pt", top: "335pt" },
             ApparentEnergy_DelpRec_VAh: { left: "620pt", top: "335pt" },
-            ACTIVE_ENERGY1_EXPORT_KWH: { left: "292pt", top: "210pt" },
-            APPARENT1_ENERGY_EXPORT_KVAH: { left: "630pt", top: "210pt" },
-            REACTIVE1_ENERGY_EXPORT_KVARH: { left: "460pt", top: "210pt" },
           };
 
     return Object.entries(tagPositions).map(([tag, position]) => {

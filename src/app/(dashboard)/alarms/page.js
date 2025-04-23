@@ -129,6 +129,38 @@ export default function Home() {
         </button>
         {isMeterDropdownVisible && (
           <div className="bg-white text-gray-700 shadow-2xl mt-3 py-4 px-4 rounded-lg overflow-y-auto h-64 transform transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-2xl hover:bg-[#F7FAFC]">
+           
+          
+            <a
+              href="#"
+              className="block py-3 px-4 hover:bg-[#E2E8F0] rounded-md transition-all duration-200"
+              onClick={() => showMeterValue("All Genset Main Incoming")}
+            >
+              All Genset Main Incoming
+            </a>
+          
+            <a
+              href="#"
+              className="block py-3 px-4 hover:bg-[#E2E8F0] rounded-md transition-all duration-200"
+              onClick={() => showMeterValue("Genset 1")}
+            >
+             Genset 1
+            </a>
+            <a
+              href="#"
+              className="block py-3 px-4 hover:bg-[#E2E8F0] rounded-md transition-all duration-200"
+              onClick={() => showMeterValue("Genset 2")}
+            >
+            Genset 2
+            </a>
+            <a
+              href="#"
+              className="block py-3 px-4 hover:bg-[#E2E8F0] rounded-md transition-all duration-200"
+              onClick={() => showMeterValue("Genset 3")}
+            >
+            Genset 3
+            </a>
+
             <a
               href="#"
               className="block py-3 px-4 hover:bg-[#E2E8F0] rounded-md transition-all duration-200"

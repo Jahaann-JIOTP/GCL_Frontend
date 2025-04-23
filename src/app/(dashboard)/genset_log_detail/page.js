@@ -26,81 +26,86 @@ const MeterDataComponent = () => {
 
         
       { key: "time", label: "Time" },
-      { key: "VOLTAGE_LINE_1_V", label: "Voltage 1_V" },
-      { key: "VOLTAGE_LINE_2_V", label: "Voltage 2_V" },
-      { key: "VOLTAGE_LINE_3_V", label: "Voltage 3_V" },
-      { key: "VOLTAGE_L_N_AVG_V", label: "Voltage AVG_V" },
+      
       { key: "VOLTAGE_LINE_1_2_V", label: "Voltage 1_2_V" },
       { key: "VOLTAGE_LINE_2_3_V", label: "Voltage 2_3_V" },
-      { key: "VOLTAGE_LINE_3_1_V", label: "Voltage 3_1_V" },
-      { key: "VOLTAGE_L_L_AVG_V", label: "Voltage AVG_V" },
+    
     ],
    
     current: [
       { key: "time", label: "Time" },
-      { key: "CURRENT_LINE_1_A", label: "Current 1_A" },
-      { key: "CURRENT_LINE_2_A", label: "Current 2_A" },
+  
       { key: "CURRENT_LINE_3_A", label: "Current 3_A" },
-      { key: "CURRENT_AVG_A", label: "Current AVG_A" },
+      { key: "CURRENT_TOTAL_A", label: "Current Total_A" },
     ],
  
     power_factor: [
       { key: "time", label: "Time" },
-      { key: "POWER_FACTOR_PF1", label: "Power Factor PF1" },
-      { key: "POWER_FACTOR_PF2", label: "Power Factor PF2" },
-      { key: "POWER_FACTOR_PF3", label: "Power Factor PF3" },
-      { key: "POWER_FACTOR_TOTAL", label: "Power Factor Total" },
+      // { key: "POWER_FACTOR_PF1", label: "Power Factor PF1" },
+      // { key: "POWER_FACTOR_PF2", label: "Power Factor PF2" },
+      // { key: "POWER_FACTOR_PF3", label: "Power Factor PF3" },
+      // { key: "POWER_FACTOR_TOTAL", label: "Power Factor Total" },
     ],
     active_power: [
       { key: "time", label: "Time" },
-      { key: "ACTIVE_POWER_P1_KW", label: "Active Power P1" },
-      { key: "ACTIVE_POWER_P2_KW", label: "Active Power P2" },
-      { key: "ACTIVE_POWER_P3_KW", label: "Active Power P3" },
-      { key: "ACTIVE_POWER_TOTAL_KW", label: "Active Power Total" },
+      // { key: "ACTIVE_POWER_P1_KW", label: "Active Power P1" },
+      // { key: "ACTIVE_POWER_P2_KW", label: "Active Power P2" },
+      // { key: "ACTIVE_POWER_P3_KW", label: "Active Power P3" },
+      // { key: "ACTIVE_POWER_TOTAL_KW", label: "Active Power Total" },
     ],
     reactive_power:[
       { key: "time", label: "Time" },
-      { key: "REACTIVE_POWER_Q1_KVAR", label: "Reactive Power Q1" },
-      { key: "REACTIVE_POWER_Q2_KVAR", label: "Reactive Power Q2" },
-      { key: "REACTIVE_POWER_Q3_KVAR", label: "Reactive Power Q3" },
-      { key: "REACTIVE_POWER_TOTAL_KVAR", label: "Reactive Power Total" },
+      // { key: "REACTIVE_POWER_Q1_KVAR", label: "Reactive Power Q1" },
+      // { key: "REACTIVE_POWER_Q2_KVAR", label: "Reactive Power Q2" },
+      // { key: "REACTIVE_POWER_Q3_KVAR", label: "Reactive Power Q3" },
+      // { key: "REACTIVE_POWER_TOTAL_KVAR", label: "Reactive Power Total" },
     ],
     apparent_power:[
       { key: "time", label: "Time" },
       { key: "APPARENT_POWER_S1_KVA", label: "Apparent Power S1" },
       { key: "APPARENT_POWER_S2_KVA", label: "Apparent Power S2" },
       { key: "APPARENT_POWER_S3_KVA", label: "Apparent Power S3" },
-      { key: "APPARENT_POWER_TOTAL_KVA", label: "Apparent Power Total" },
+      // { key: "APPARENT_POWER_TOTAL_KVA", label: "Apparent Power Total" },
 
     ],
     harmonics:[
       { key: "time", label: "Time" },
-      { key: "HARMONICS_I1_THD", label: "Harmonics I1" },
-      { key: "HARMONICS_I2_THD", label: "Harmonics I2" },
-      { key: "HARMONICS_I3_THD", label: "Harmonics I3" },
-      { key: "HARMONICS_V1_THD", label: "Harmonics V1" },
-      { key: "HARMONICS_V2_THD", label: "Harmonics V2" },
-      { key: "HARMONICS_V3_THD", label: "Harmonics V3" },
+      // { key: "HARMONICS_I1_THD", label: "Harmonics I1" },
+      // { key: "HARMONICS_I2_THD", label: "Harmonics I2" },
+      // { key: "HARMONICS_I3_THD", label: "Harmonics I3" },
+      // { key: "HARMONICS_V1_THD", label: "Harmonics V1" },
+      // { key: "HARMONICS_V2_THD", label: "Harmonics V2" },
+      // { key: "HARMONICS_V3_THD", label: "Harmonics V3" },
      
     ], 
+    
+
     active_energy:[
       { key: "time", label: "Time" },
-      { key: "ACTIVE_ENERGY_IMPORT_KWH", label: "Active Energy Import" },
-      // { key: "ACTIVE_ENERGY_EXPORT_KWH", label: "Active Energy  Export" },
+      { key: "SIGNED_REAL_ENERGY_CONSUMPTION_KWH", label: "Active Energy Consumption" },
+      
      
      ],
      reactive_energy:[
       { key: "time", label: "Time" },
-      { key: "REACTIVE_ENERGY_IMPORT_KVARH", label: "Reactive Energy Import" },
+      // { key: "REACTIVE_ENERGY_IMPORT_KVARH", label: "Reactive Energy Import" },
       // { key: "REACTIVE_ENERGY_EXPORT_KVARH", label: "Reactive Energy Export" },
       
 
      ],
      apparent_energy:[
       { key: "time", label: "Time" },
-      { key: "APPARENT_ENERGY_IMPORT_KVAH", label: "Apparent Energy Import" },
-      { key: "APPARENT_ENERGY_EXPORT_KVAH", label: "Apparent Energy Export" },
+     
+      { key: "APPARENT_ENERGY_CONSUMPTION_KVAH", label: "Apparent Energy Consumption"}, 
+      
+      
+      
+      
      ]
+
+
+
+     
 
   };
   
@@ -115,7 +120,7 @@ const MeterDataComponent = () => {
     setError("");
 
     try {
-      const response = await axios.get("http://15.206.128.214/Test_Api/log_data.php", {
+      const response = await axios.get("http://localhost/Test_Api/genset_log_data.php", {
         params: {
           type, // Dynamically determined type (voltage, current, power_factor)
           meters: meter, // Dynamically retrieved meter value

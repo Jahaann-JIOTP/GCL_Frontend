@@ -15,6 +15,11 @@ const ExamplePage = () => {
   const [loading, setLoading] = useState(false);
 
   const meters = [
+  
+    { id: "G1_U16", name: "Main Genset" },
+    { id: "G1_U17", name: "Genset 1" },
+    { id: "G1_U18", name: "Genset 2" },
+    { id: "G1_U19", name: "Genset 3" },
     { id: "G2_U20", name: "Solar 1" },
     { id: "U_27", name: "Solar 2" },
     { id: "U_24", name: "Tranformer 1" },
@@ -41,6 +46,9 @@ const ExamplePage = () => {
     { id: "U_13", name: "Prekiln" },
     { id: "U_21", name: "Press PH4300" },
     { id: "U_14", name: "Layer Dryer" },
+   
+
+   
     
     { id: "G1_U2", name: "Polishing Line 5" },
     { id: "G1_U3", name: "Polishing Line 6" },
@@ -55,7 +63,7 @@ const ExamplePage = () => {
     { id: "G1_U13", name: "Rental Genset" },
     { id: "G1_U14", name: "Water Treatment Area" },
     { id: "G1_U15", name: "G1_U15" },
-    { id: "G1_U16", name: "G1_U16" },
+ 
     { id: "G2_U2", name: "Press PH  4300/1750-1" },
     { id: "G2_U3", name: "Ball Mills -3" },
     { id: "G2_U4", name: "Hard Materials" },

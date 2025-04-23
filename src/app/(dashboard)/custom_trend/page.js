@@ -16,6 +16,10 @@ function CustomTrend() {
   const [showParameters, setShowParameters] = useState(false);
 
   const meterMapping = {
+    "Main Genset": "G1_U16",
+    "Genset 1": "G1_U17",
+    "Genset 2": "G1_U18",
+    "Genset 3" : "G1_U19",
     "Solar 1": "G2_U20",
     "Solar 2": "U_27",
     "Tranformer 1": "U_24",
@@ -48,14 +52,18 @@ function CustomTrend() {
     "Polishing Line 7": "G1_U5",
     "Air Compressor-2": "G1_U6",
     "Glaze Ball Mill 9500L-3": "G1_U7",
-    G1_U8: "G1_U8",
-    G1_U10: "G1_U10",
+    "Spare 02": "G1_U8",
+    "Spare 04": "G1_U10",
     "5 Layer Dryer": "G1_U11",
     "5 Layer Dryer Unloading Machine": "G1_U12",
     "Rental Genset": "G1_U13",
     "Water Treatment Area": "G1_U14",
-    G1_U15: "G1_U15",
-    G1_U16: "G1_U16",
+    "Spare 05": "G1_U15",
+  
+    
+    
+
+
     "Press PH  4300/1750-1": "G2_U2",
     "Ball Mills -3": "G2_U3",
     "Hard Materials": "G2_U4",
@@ -71,7 +79,7 @@ function CustomTrend() {
     "Belt 100 Feeding to BM500 ": "G2_U16",
     "No Combustion System ": "G2_U17",
     "Digital Printing Machine  ": "G2_U18",
-    "G2_U5 ": "G2_U5",
+    "Spare 07 ": "G2_U5",
     "Air Compressor 3  ": "G2_U19",
     "Air Compressor 4  ": "G2_U6",
   };
