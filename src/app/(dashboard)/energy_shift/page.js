@@ -139,7 +139,7 @@ const ExamplePage = () => {
     }
 
     const suffix = "ACTIVE_ENERGY_IMPORT_KWH"; // Fixed suffix
-    const apiUrl = `http://15.206.128.214/Test_Api/energyshift.php`;
+    const apiUrl = `https://www.gclapi.jiotp.com/gcl_backend/energyshift.php`;
 
     setLoading(true); // Show preloader while data is being fetched
 

@@ -33,7 +33,7 @@ const AlarmTable = () => {
   useEffect(() => {
     const fetchData = () => {
       axios
-        .get("http://15.206.128.214/Test_Api/comparison.php") // Update to your backend API URL
+        .get("https://www.gclapi.jiotp.com/gcl_backend/comparison.php") // Update to your backend API URL
         .then((response) => {
           console.log("API Response:", response.data); // Debugging API response
           if (response.data && Array.isArray(response.data.alarms)) {

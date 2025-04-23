@@ -3,7 +3,7 @@
 import mysql from 'mysql2/promise';
 
 const pool = mysql.createPool({
-  host: '15.206.128.214',
+  host: 'https://www.gclapi.jiotp.com/gcl_backend/login.php',
   user: 'root',
   password: '',
   database: 'gcl',

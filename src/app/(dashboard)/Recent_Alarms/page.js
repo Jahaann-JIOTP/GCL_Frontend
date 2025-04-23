@@ -21,7 +21,7 @@ const Page = () => {
 
       try {
         const response = await axios.get(
-          `http://15.206.128.214/Test_Api/comparison2.php?filter=${filter}`
+          `https://www.gclapi.jiotp.com/gcl_backend/comparison2.php?filter=${filter}`
         );
 
         // Validate and process response

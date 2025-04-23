@@ -302,7 +302,7 @@ function DashboardPage() {
 
   useEffect(() => {
     const fetchSolarData = () => {
-      const apiUrl = `http://15.206.128.214/Test_API/solar_vs_trans.php?start_date=${solarStartDate}&end_date=${solarEndDate}`;
+      const apiUrl = `https://www.gclapi.jiotp.com/gcl_backend/solar_vs_trans.php?start_date=${solarStartDate}&end_date=${solarEndDate}`;
       fetch(apiUrl)
         .then((response) => response.json())
         .then((data) => {
@@ -323,7 +323,7 @@ function DashboardPage() {
 
   useEffect(() => {
     const fetchTransformerData = () => {
-      const apiUrl = `http://15.206.128.214/Test_API/solar_vs_trans.php?start_date=${transformerStartDate}&end_date=${transformerEndDate}`;
+      const apiUrl = `https://www.gclapi.jiotp.com/gcl_backend/solar_vs_trans.php?start_date=${transformerStartDate}&end_date=${transformerEndDate}`;
       fetch(apiUrl)
         .then((response) => response.json())
         .then((data) => {
@@ -345,7 +345,7 @@ function DashboardPage() {
 
   useEffect(() => {
     const fetchTransformer1Data = () => {
-      const apiUrl = `http://15.206.128.214/Test_Api/solar_vs_trans.php?start_date=${transformer1StartDate}&end_date=${transformer1EndDate}`;
+      const apiUrl = `https://www.gclapi.jiotp.com/gcl_backend/solar_vs_trans.php?start_date=${transformer1StartDate}&end_date=${transformer1EndDate}`;
       fetch(apiUrl)
         .then((response) => response.json())
         .then((data) => {
@@ -366,7 +366,7 @@ function DashboardPage() {
 
   useEffect(() => {
     const fetchAll_GensetData = () => {
-      const apiUrl = `http://15.206.128.214/Test_API/solar_vs_trans.php?start_date=${All_GensetStartDate}&end_date=${All_GensetEndDate}`;
+      const apiUrl = `https://www.gclapi.jiotp.com/gcl_backend/solar_vs_trans.php?start_date=${All_GensetStartDate}&end_date=${All_GensetEndDate}`;
       fetch(apiUrl)
         .then((response) => response.json())
         .then((data) => {
@@ -387,7 +387,7 @@ function DashboardPage() {
 
   useEffect(() => {
     const fetchAll_ConsumptionData = async () => {
-      const apiUrl = `http://15.206.128.214/Test_Api/total_consumption.php?start_date=${All_ConsumptionStartDate}&end_date=${All_ConsumptionEndDate}`;
+      const apiUrl = `https://www.gclapi.jiotp.com/gcl_backend/total_consumption.php?start_date=${All_ConsumptionStartDate}&end_date=${All_ConsumptionEndDate}`;
       console.log("Fetching:", apiUrl);
 
       try {
@@ -419,7 +419,7 @@ function DashboardPage() {
 
   useEffect(() => {
     const fetchAll_productionData = async () => {
-      const apiUrl = `http://15.206.128.214/Test_Api/unaccoutable_energy.php?start_date=${All_productionStartDate}&end_date=${All_productionEndDate}`;
+      const apiUrl = `https://www.gclapi.jiotp.com/gcl_backend/unaccoutable_energy.php?start_date=${All_productionStartDate}&end_date=${All_productionEndDate}`;
       console.log("Fetching:", apiUrl);
 
       try {
@@ -454,7 +454,7 @@ function DashboardPage() {
 
   useEffect(() => {
     const fetchAll_energyData = async () => {
-      const apiUrl = `http://15.206.128.214/Test_Api/unaccoutable_energy.php?start_date=${All_energyStartDate}&end_date=${All_energyEndDate}`;
+      const apiUrl = `https://www.gclapi.jiotp.com/gcl_backend/unaccoutable_energy.php?start_date=${All_energyStartDate}&end_date=${All_energyEndDate}`;
       console.log("Fetching:", apiUrl);
 
       try {
@@ -493,7 +493,7 @@ function DashboardPage() {
         chart.logo.disabled = true;
 
         // Dynamic API URL for production chart
-        const apiUrl = `http://15.206.128.214/Test_Api/solar_vs_trans_com.php?start_date=${startDate}&end_date=${endDate}&label=${timePeriod}`;
+        const apiUrl = `https://www.gclapi.jiotp.com/gcl_backend/solar_vs_trans_com.php?start_date=${startDate}&end_date=${endDate}&label=${timePeriod}`;
 
         try {
           const response = await axios.get(apiUrl);
@@ -688,7 +688,7 @@ function DashboardPage() {
         try {
           const formattedStartDate1 = startDate1.toISOString().split("T")[0];
           const formattedEndDate1 = endDate1.toISOString().split("T")[0];
-          const apiUrl = `http://15.206.128.214/Test_API/pie_api.php?start_date=${formattedStartDate1}&end_date=${formattedEndDate1}&meterId=G2_U20,U_27&suffixes=ACTIVE_ENERGY_IMPORT_KWH`;
+          const apiUrl = `https://www.gclapi.jiotp.com/gcl_backend/pie_api.php?start_date=${formattedStartDate1}&end_date=${formattedEndDate1}&meterId=G2_U20,U_27&suffixes=ACTIVE_ENERGY_IMPORT_KWH`;
           const response = await axios.get(apiUrl);
 
           const data = response.data.total_consumption;
@@ -746,7 +746,7 @@ function DashboardPage() {
         try {
           const formattedStartDate1 = startDate1.toISOString().split("T")[0];
           const formattedEndDate1 = endDate1.toISOString().split("T")[0];
-          const apiUrl = `http://15.206.128.214/Test_API/pie_api.php?start_date=${formattedStartDate1}&end_date=${formattedEndDate1}&meterId=U_24,U_25&suffixes=ACTIVE_ENERGY_IMPORT_KWH`;
+          const apiUrl = `https://www.gclapi.jiotp.com/gcl_backend/pie_api.php?start_date=${formattedStartDate1}&end_date=${formattedEndDate1}&meterId=U_24,U_25&suffixes=ACTIVE_ENERGY_IMPORT_KWH`;
           const response = await axios.get(apiUrl);
 
           const data = response.data.total_consumption;
@@ -804,7 +804,7 @@ function DashboardPage() {
         try {
           const formattedStartDate1 = startDate1.toISOString().split("T")[0];
           const formattedEndDate1 = endDate1.toISOString().split("T")[0];
-          const apiUrl = `http://15.206.128.214/Test_API/solar_vs_trans.php?start_date=${formattedStartDate1}&end_date=${formattedEndDate1}`;
+          const apiUrl = `https://www.gclapi.jiotp.com/gcl_backend/solar_vs_trans.php?start_date=${formattedStartDate1}&end_date=${formattedEndDate1}`;
           const response = await axios.get(apiUrl);
 
           const data = response.data.total_consumption;
@@ -891,7 +891,7 @@ function DashboardPage() {
     setLoading1(true);
     setError1(null);
 
-    const apiUrl1 = `http://15.206.128.214/Test_Api/total_consumption_pp.php?value=${value}`;
+    const apiUrl1 = `https://www.gclapi.jiotp.com/gcl_backend/total_consumption_pp.php?value=${value}`;
 
     try {
       const response = await fetch(apiUrl1);
@@ -1021,9 +1021,9 @@ function DashboardPage() {
 
   // API Endpoints
   const categoryApis = {
-    "Solar Generation": "http://15.206.128.214/Test_Api/solar_pp.php?value=",
-    Genset: "http://15.206.128.214/Test_Api/Genset_pp.php?value=",
-    Transformer: "http://15.206.128.214/Test_Api/transformer_pp.php?value=",
+    "Solar Generation": "https://www.gclapi.jiotp.com/gcl_backend/solar_pp.php?value=",
+    Genset: "https://www.gclapi.jiotp.com/gcl_backend/Genset_pp.php?value=",
+    Transformer: "https://www.gclapi.jiotp.com/gcl_backend/transformer_pp.php?value=",
   };
 
   useEffect(() => {
