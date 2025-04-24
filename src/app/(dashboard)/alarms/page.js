@@ -44,7 +44,7 @@ export default function Home() {
   // Function to fetch data from the server (GET request)
   const fetchData = async () => {
     try {
-      const response = await fetch("https://www.gclapi.jiotp.com/fetch.php"); // Your PHP endpoint
+      const response = await fetch("https://gclapi.jiotp.com//fetch.php"); // Your PHP endpoint
       const result = await response.json();
       setData(result); // Save the fetched data into the state
     } catch (error) {
@@ -86,7 +86,7 @@ export default function Home() {
     console.log("Data being sent:", dataToSubmit);
   
     try {
-      const response = await fetch("https://www.gclapi.jiotp.com/logo.php", {
+      const response = await fetch("https://gclapi.jiotp.com//logo.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

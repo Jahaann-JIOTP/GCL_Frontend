@@ -117,7 +117,7 @@ function CustomTrend() {
 
   useEffect(() => {
     if (startDate && endDate && selectedMeter.length > 0 && selectedParameter) {
-      const apiUrl = `https://www.gclapi.jiotp.com/line_api.php?start_date=${startDate}&end_date=${endDate}&meterId=${selectedMeter
+      const apiUrl = `https://gclapi.jiotp.com//line_api.php?start_date=${startDate}&end_date=${endDate}&meterId=${selectedMeter
         .map((m) => meterMapping[m])
         .join(",")}&suffixes=${parameterMapping[selectedParameter]}`;
 

@@ -66,17 +66,17 @@ const MeterDataComponent = () => {
 
   // Update the API endpoint link when the meter changes
   useEffect(() => {
-    setLink(`https://www.gclapi.jiotp.com/genset1_volts_data.php?meter=${meter}`);
+    setLink(`https://gclapi.jiotp.com//genset1_volts_data.php?meter=${meter}`);
   }, [meter]);
   const handleTabSwitch = (tab) => {
     setActiveTab(tab);
 
     if (tab === "volts") {
-      setLink(`https://www.gclapi.jiotp.com/genset1_volts_data.php?meter=${meter}`);
+      setLink(`https://gclapi.jiotp.com//genset1_volts_data.php?meter=${meter}`);
     } else if (tab === "power") {
-      setLink(`https://www.gclapi.jiotp.com/genset1_power_data.php?meter=${meter}`);
+      setLink(`https://gclapi.jiotp.com//genset1_power_data.php?meter=${meter}`);
     } else if (tab === "energy") {
-      setLink(`https://www.gclapi.jiotp.com/genset1_energy_data.php?meter=${meter}`);
+      setLink(`https://gclapi.jiotp.com//genset1_energy_data.php?meter=${meter}`);
     } else {
       setLink(""); // Handle other cases if needed
     }

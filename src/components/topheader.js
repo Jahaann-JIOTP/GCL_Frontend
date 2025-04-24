@@ -13,7 +13,7 @@ const TopHeader = () => {
     setError(null);
 
     try {
-      const response = await axios.get("https://www.gclapi.jiotp.com/bell.php");
+      const response = await axios.get("https://gclapi.jiotp.com//bell.php");
       let newAlarms = response.data.alarms || [];
       const backendBellStatus = response.data.bell_status || "blue";
 
