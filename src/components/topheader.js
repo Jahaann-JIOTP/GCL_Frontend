@@ -74,7 +74,7 @@ const TopHeader = () => {
       <div className="header-right flex items-center space-x-4">
         <a href="#" className="user-link flex items-center space-x-1">
           <i className="fa fa-user-circle"></i>
-          <span className="text-[#00adee] text-[12px]">demo</span>
+          {/* <span className="text-[#00adee] text-[12px]">demo</span> */}
         </a>
         <span>|</span>
         <a href="/" className="user-link text-[12px]">
