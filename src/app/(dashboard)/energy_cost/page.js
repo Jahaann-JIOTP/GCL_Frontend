@@ -115,7 +115,7 @@ const ExamplePage = () => {
     }
 
     const suffix = "ACTIVE_ENERGY_IMPORT_KWH"; // Fixed suffix
-    const apiUrl = `https://www.gclapi.jiotp.com/gcl_backend/energycostreport.php`;
+    const apiUrl = `https://www.gclapi.jiotp.com/energycostreport.php`;
 
     setLoading(true); // Show the preloader immediately
 

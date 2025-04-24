@@ -115,19 +115,19 @@ class Custom_div extends React.Component {
             // Dynamically build the API URL based on chart type
             if (chartConfig.chartType === "bar") {
 
-                apiUrl = `https://www.gclapi.jiotp.com/gcl_backend/bar_api.php?start_date=${chartConfig.startDate}&end_date=${chartConfig.endDate}&meterId=${chartConfig.selectedMeter}&suffixes=${chartConfig.selectedParameter}`;
+                apiUrl = `https://www.gclapi.jiotp.com/bar_api.php?start_date=${chartConfig.startDate}&end_date=${chartConfig.endDate}&meterId=${chartConfig.selectedMeter}&suffixes=${chartConfig.selectedParameter}`;
 
             } else if (chartConfig.chartType === "pie") {
 
-                apiUrl = `https://www.gclapi.jiotp.com/gcl_backend/pie_api.php?start_date=${chartConfig.startDate}&end_date=${chartConfig.endDate}&meterId=${chartConfig.selectedMeter}&suffixes=${chartConfig.selectedParameter}`;
+                apiUrl = `https://www.gclapi.jiotp.com/pie_api.php?start_date=${chartConfig.startDate}&end_date=${chartConfig.endDate}&meterId=${chartConfig.selectedMeter}&suffixes=${chartConfig.selectedParameter}`;
 
             } else if (chartConfig.chartType === "line") {
 
-                apiUrl = `https://www.gclapi.jiotp.com/gcl_backend/line_api.php?start_date=${chartConfig.startDate}&end_date=${chartConfig.endDate}&meterId=${chartConfig.selectedMeter}&suffixes=${chartConfig.selectedParameter}`;
+                apiUrl = `https://www.gclapi.jiotp.com/line_api.php?start_date=${chartConfig.startDate}&end_date=${chartConfig.endDate}&meterId=${chartConfig.selectedMeter}&suffixes=${chartConfig.selectedParameter}`;
 
             } else if (chartConfig.chartType === "groupedBar") {
 
-                apiUrl = `https://www.gclapi.jiotp.com/gcl_backend/period_api.php?time_period=${chartConfig.periodOption}&meterId=${chartConfig.selectedMeter}&suffixes=${chartConfig.selectedParameter}`;
+                apiUrl = `https://www.gclapi.jiotp.com/period_api.php?time_period=${chartConfig.periodOption}&meterId=${chartConfig.selectedMeter}&suffixes=${chartConfig.selectedParameter}`;
             }
             try {
                 // Fetch data from API with no-cache setting

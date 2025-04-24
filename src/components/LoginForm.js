@@ -13,7 +13,7 @@ function LoginForm() {
     e.preventDefault(); // Prevent default form submission
 
     try {
-      const response = await fetch("https://www.gclapi.jiotp.com/gcl_backend/login.php", {
+      const response = await fetch("https://www.gclapi.jiotp.com/login.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
