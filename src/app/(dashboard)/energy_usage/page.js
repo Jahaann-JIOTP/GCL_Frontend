@@ -14,7 +14,8 @@ const ExamplePage = () => {
   const [loading, setLoading] = useState(false);
 
   const meters = [
-    { id: "G1_U16", name: "All Genset Main Incoming" },
+  
+    { id: "G1_U16", name: "Main Genset" },
     { id: "G1_U17", name: "Genset 1" },
     { id: "G1_U18", name: "Genset 2" },
     { id: "G1_U19", name: "Genset 3" },
@@ -44,6 +45,9 @@ const ExamplePage = () => {
     { id: "U_13", name: "Prekiln" },
     { id: "U_21", name: "Press PH4300" },
     { id: "U_14", name: "Layer Dryer" },
+   
+
+  
     
     { id: "G1_U2", name: "Polishing Line 5" },
     { id: "G1_U3", name: "Polishing Line 6" },
@@ -51,14 +55,14 @@ const ExamplePage = () => {
     { id: "G1_U5", name: "Polishing Line 7" },
     { id: "G1_U6", name: "Air Compressor-2" },
     { id: "G1_U7", name: "Glaze Ball Mill 9500L-3" },
-    { id: "G1_U8", name: "G1_U8" },
-    { id: "G1_U10", name: "G1_U10" },
+    { id: "G1_U8", name: "Spare 02" },
+    { id: "G1_U10", name: "Spare 04" },
     { id: "G1_U11", name: "5 Layer Dryer" },
     { id: "G1_U12", name: "5 Layer Dryer Unloading Machine" },
     { id: "G1_U13", name: "Rental Genset" },
     { id: "G1_U14", name: "Water Treatment Area" },
-    { id: "G1_U15", name: "G1_U15" },
-    
+    { id: "G1_U15", name: "Spare 05" },
+ 
     { id: "G2_U2", name: "Press PH  4300/1750-1" },
     { id: "G2_U3", name: "Ball Mills -3" },
     { id: "G2_U4", name: "Hard Materials" },
@@ -74,7 +78,7 @@ const ExamplePage = () => {
     { id: "G2_U16", name: "Belt 100 Feeding to BM500 " },
     { id: "G2_U17", name: "No Combustion System " },
     { id: "G2_U18", name: "Digital Printing Machine  " },
-    { id: "G2_U5", name: "G2_U5 " },
+    { id: "Spare 07", name: "G2_U5 " },
     { id: "G2_U19", name: "Air Compressor 3  " },
     { id: "G2_U6", name: "Air Compressor 4  " },
   ];

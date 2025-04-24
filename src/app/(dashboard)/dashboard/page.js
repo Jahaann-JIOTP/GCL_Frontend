@@ -85,20 +85,6 @@ function DashboardPage() {
         setWeather(data);
       })
       .catch((err) => console.error("Error fetching weather data:", err));
-
-
-
-    // Fetching location information using OpenCage Geocoding API (Reverse Geocoding)
-    // const geocodeUrl = `https://api.opencagedata.com/geocode/v1/json?q=31.5497+73.11076&key=YOUR_API_KEY`;
-    // fetch(geocodeUrl)
-    //   .then((res) => res.json())
-    //   .then((data) => {
-    //     console.log("Location Data:", data); // Debugging
-    //     if (data.results && data.results[0]) {
-    //       setLocation(data.results[0].formatted); // Set location as city and country
-    //     }
-    //   })
-    //   .catch((err) => console.error("Error fetching location data:", err));
   }, []);
 
 
@@ -639,8 +625,8 @@ function DashboardPage() {
           chart.legend.labels.template.maxWidth = 100;
           chart.legend.scrollable = true;
           chart.legend.valueLabels.template.disabled = true;
-          chart.legend.marginTop = 20;
-          chart.legend.paddingBottom = 20; // Adjust the value as needed
+          // chart.legend.marginTop = 20;
+          // chart.legend.paddingBottom = 20; // Adjust the value as needed
 
 
           // Legend markers configuration
@@ -1023,7 +1009,7 @@ function DashboardPage() {
   const categoryApis = {
     "Solar Generation": "https://gclapi.jiotp.com//solar_pp.php?value=",
     Genset: "https://gclapi.jiotp.com//Genset_pp.php?value=",
-    Transformer: "https://gclapi.jiotp.com//transformer_pp.php?value=",
+    FESCO: "https://gclapi.jiotp.com//transformer_pp.php?value=",
   };
 
   useEffect(() => {
@@ -1713,20 +1699,20 @@ function DashboardPage() {
             </h4>
 
             {/* The original chart container */}
-            <div id="productionChart" className="w-full h-[30vh] mt-4 "></div>
+            <div id="productionChart" className="w-full h-[90%] mt-4 "></div>
           </Div>
         </div>
         <div
           className={`transition-all duration-300 shadow-md rounded-md overflow-hidden ${
             expanded
-              ? "absolute top-0 left-0 w-full h-screen z-[999] border-t-[5px] border-[rgb(94,140,192)] p-6"
+              ? "absolute top-0 left-0 w-full h-screen z-[999] border-t-[5px] border-[rgb(94,140,192)] p-6  "
               : "relative w-full max-w-[92%] sm:max-w-[73%] md:max-w-[64%] lg:max-w-[59%] xl:max-w-[49%] h-[30vh] border-t-[5px] border-[rgb(94,140,192)] p-4"
           }`}
         >
           {/* Background Layer */}
           <div
             className="absolute inset-0 bg-white"
-            style={{ opacity: 0.5 }}
+            style={{ opacity: 100 }}
           ></div>
 
           {/* Foreground Content */}
@@ -1785,16 +1771,17 @@ function DashboardPage() {
         </div>
 
         <div
-          className={`relative overflow-hidden transition-all duration-300 shadow-md rounded-md border-t-[5px] border-[rgb(94,140,192)] ${
-            expandedCards?.airConsumption1
-              ? "absolute top-0 left-0 w-full h-screen z-[999] p-6"
-              : "w-full sm:w-[74%] md:w-[64%] lg:w-[60%] xl:w-[50%] h-[30vh]"
-          }`}
+         className={`transition-all duration-300 shadow-md rounded-md border-t-[5px] border-[rgb(94,140,192)] ${
+          expandedCards?.airConsumption1
+            ? "fixed top-0 left-0 w-full h-screen z-[999] p-6 bg-white overflow-auto"
+            : "relative w-full sm:w-[74%] md:w-[64%] lg:w-[60%] xl:w-[50%] h-[30vh] overflow-hidden"
+        }`}
+        
         >
           {/* Background Layer */}
           <div
             className="absolute inset-0 bg-white"
-            style={{ opacity: 0.4 }}
+            style={{ opacity: 100}}
           ></div>
 
           {/* Foreground Content */}
