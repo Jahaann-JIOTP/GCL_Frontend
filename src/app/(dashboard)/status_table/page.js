@@ -72,7 +72,7 @@ function Status_table() {
 
   const fetchData = () => {
       axios
-        .get('http://13.234.241.103:1880/latestgcl1')
+        .get('https://gclapi.jiotp.com/noderedlink.php')
         .then((response) => {
           const apiData = response.data;
           const tableData = Object.keys(meterMapping).map((meterName, index) => {

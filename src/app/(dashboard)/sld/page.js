@@ -403,7 +403,7 @@ export default function SLDPage() {
   // Function to fetch data from the API
   const fetchData = async () => {
     try {
-      const res = await fetch("http://13.234.241.103:1880/latestgcl1");
+      const res = await fetch("https://gclapi.jiotp.com/noderedlink.php");
       const json = await res.json();
       setData(json);
     } catch (error) {
