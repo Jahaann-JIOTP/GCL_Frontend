@@ -201,10 +201,14 @@ const MeterDataComponent = () => {
             APPARENT_POWER_TOTAL_KVA: { left: "860pt", top: "377pt" },
           }
         : {
-            ACTIVE_ENERGY_IMPORT_KWH: { left: "292pt", top: "145pt" },
-            REACTIVE_ENERGY_IMPORT_KVARH: { left: "460pt", top: "145pt" },
-            APPARENT_ENERGY_KVAH: { left: "630pt", top: "145pt" },
-           
+          ACTIVE_ENERGY_IMPORT_KWH: { left: "292pt", top: "145pt" },
+          ACTIVE_ENERGY_EXPORT_KWH: { left: "292pt", top: "210pt" },
+
+          REACTIVE_ENERGY_IMPORT_KVARH: { left: "460pt", top: "145pt" },
+          REACTIVE_ENERGY_EXPORT_KVARH: { left: "460pt", top: "210pt" },
+         
+          APPARENT_ENERGY_IMPORT_KVAH: { left: "630pt", top: "145pt" },
+          APPARENT_ENERGY_EXPORT_KVAH: { left: "630pt", top: "210pt" },
            
             
 
@@ -214,10 +218,7 @@ const MeterDataComponent = () => {
             ApparentEnergy_DelmRec_VAh: { left: "620pt", top: "275pt" },
             ActiveEnergy_DelpRec_Wh: { left: "280pt", top: "335pt" },
             ReactiveEnergy_DelpRec_VARh: { left: "450pt", top: "335pt" },
-            ApparentEnergy_DelpRec_VAh: { left: "620pt", top: "335pt" },
-            ACTIVE_ENERGY1_EXPORT_KWH: { left: "292pt", top: "210pt" },
-            APPARENT1_ENERGY_EXPORT_KVAH: { left: "630pt", top: "210pt" },
-            REACTIVE1_ENERGY_EXPORT_KVARH: { left: "460pt", top: "210pt" },
+            APPARENT_ENERGY_KVAH: { left: "620pt", top: "335pt" },
           };
 
     return Object.entries(tagPositions).map(([tag, position]) => {
