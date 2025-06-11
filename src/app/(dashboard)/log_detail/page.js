@@ -100,6 +100,7 @@ const MeterDataComponent = () => {
       { key: "time", label: "Time" },
       { key: "APPARENT_ENERGY_IMPORT_KVAH", label: "Apparent Energy Import" },
       { key: "APPARENT_ENERGY_EXPORT_KVAH", label: "Apparent Energy Export" },
+      { key: "APPARENT_ENERGY_KVAH", label: "Apparent Energy total" },
      ]
 
   };
