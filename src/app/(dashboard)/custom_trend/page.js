@@ -94,7 +94,7 @@ function CustomTrend() {
     "Current B": "CURRENT_LINE_2_A",
     "Current C": "CURRENT_LINE_3_A",
     "Current Total": "CURRENT_TOTAL_A",
-    Frequency: "FREQUENCY_F",
+    "Frequency": "FREQUENCY_F",
     "Power Factor A": "POWER_FACTOR_PF1",
     "Power Factor B": "POWER_FACTOR_PF2",
     "Power Factor C": "POWER_FACTOR_PF3",

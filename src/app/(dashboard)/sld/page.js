@@ -560,18 +560,17 @@ export default function SLDPage() {
                 ((parseFloat(getValue("U_24_ACTIVE_POWER_TOTAL_KW")) || 0) +
                   Math.abs(
                     parseFloat(getValue("U_25_ACTIVE_POWER_TOTAL_KW")) || 0
-                  )) /
-                1000
+                  )) 
+                
               ).toFixed(2)}{" "}
               kW
             </p>
           </div>
           {/* Trafo1 */}
           <div className="absolute left-[480px] top-[180px] text-[13px] font-bold text-[#167fe4] text-center">
-            <p>
-              {" "}
-              {(getValue("U_24_ACTIVE_POWER_TOTAL_KW") / 1000).toFixed(2)} kW
-            </p>
+                   <p>
+                    {(parseFloat(getValue("U_24_ACTIVE_POWER_TOTAL_KW")) || 0).toFixed(2)} kW
+                  </p>
             <p className="mb-[-3px] mt-[-3px]">
               {" "}
               {getValue("U_24_VOLTAGE_L_L_AVG_V")} V
@@ -586,10 +585,9 @@ export default function SLDPage() {
                 : "text-[#167fe4]"
             }`}
           >
-            <p>
-              {" "}
-              {(getValue("U_25_ACTIVE_POWER_TOTAL_KW") / 1000).toFixed(2)} kW
-            </p>
+                  <p>
+                 {(parseFloat(getValue("U_25_ACTIVE_POWER_TOTAL_KW")) || 0).toFixed(2)} kW
+                    </p>
             <p className="mb-[-3px] mt-[-3px]">
               {" "}
               {getValue("U_25_VOLTAGE_L_L_AVG_V")} V
