@@ -86,13 +86,13 @@ const MeterDataComponent = () => {
     active_energy:[
       { key: "time", label: "Time" },
       { key: "ACTIVE_ENERGY_IMPORT_KWH", label: "Active Energy Import" },
-      // { key: "ACTIVE_ENERGY_EXPORT_KWH", label: "Active Energy  Export" },
+      { key: "ACTIVE_ENERGY_EXPORT_KWH", label: "Active Energy  Export" },
      
      ],
      reactive_energy:[
       { key: "time", label: "Time" },
       { key: "REACTIVE_ENERGY_IMPORT_KVARH", label: "Reactive Energy Import" },
-      // { key: "REACTIVE_ENERGY_EXPORT_KVARH", label: "Reactive Energy Export" },
+      { key: "REACTIVE_ENERGY_EXPORT_KVARH", label: "Reactive Energy Export" },
       
 
      ],

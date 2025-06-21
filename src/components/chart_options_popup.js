@@ -274,7 +274,7 @@ function ChartOptionsPopup({ closePopup, applyChartConfig, chartType }) {
                         type={`${chartType === "groupedBar" ? "radio" : "checkbox"}`}
                         value={meter}
                         checked={selectedMeter.includes(meter)}
-                        onChange={(e) => {
+                        onChange={(e) => {               
                           if (chartType === "groupedBar") {
                             // Only allow one meter to be selected for groupedBar charts
                             setSelectedMeter([meter]);
